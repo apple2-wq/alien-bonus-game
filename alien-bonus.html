@@ -153,9 +153,36 @@
     const bonusScores = [0, 0];
 
     function numberFromText(text) {
-      const match = String(text).replaceAll(",", "").match(/-?\d+/);
-      return match ? Number(match[0]) : 0;
+      const matches = String(text)
+        .replaceAll(",", "")
+        .match(/-?\d+/g);
+
+      /*
+        「P1 BONUS：500点」なら
+        最初の1ではなく最後の500を使う
+      */
+      return matches ? Number(matches[matches.length - 1]) : 0;
     }
+
+    /*
+      各ステージ内の不要なボタン・画面を消す。
+      元のステージ単体ファイルは変更しなくてよい。
+    */
+    gameFrame.addEventListener("load", () => {
+      try {
+        const frameDocument = gameFrame.contentDocument;
+
+        if (currentStage === "alien") {
+          frameDocument.getElementById("restartButton")?.remove();
+        }
+
+        if (currentStage === "bonus") {
+          frameDocument.getElementById("readyScreen")?.remove();
+        }
+      } catch (error) {
+        console.log("不要画面を非表示にできませんでした", error);
+      }
+    });
 
     function winnerText(score1, score2) {
       if (score1 > score2) {
@@ -196,11 +223,11 @@
 
     function startBonusStage() {
       currentStage = "bonus";
-      alienResultScreen.style.display = "none";
 
       /*
         ボーナスの最初のSTART画面が
-        一瞬見えないよう、読み込み中は隠す
+        一瞬も見えないよう、読み込み中は隠す。
+        エイリアンの結果画面はまだ残しておく。
       */
       gameFrame.style.visibility = "hidden";
 
@@ -212,7 +239,7 @@
             const readyScreen = bonusDocument.getElementById("readyScreen");
 
             if (readyScreen) {
-              readyScreen.style.display = "none";
+              readyScreen.remove();
             }
 
             /* 直接 3・2・1 の演出を始める */
@@ -222,10 +249,18 @@
               bonusDocument.getElementById("playButton")?.click();
             }
 
-            gameFrame.style.visibility = "visible";
+            /*
+              3・2・1画面の準備が終わってから
+              結果画面と入れ替える
+            */
+            setTimeout(() => {
+              gameFrame.style.visibility = "visible";
+              alienResultScreen.style.display = "none";
+            }, 50);
           } catch (error) {
             console.log("ボーナスステージを開始できませんでした", error);
             gameFrame.style.visibility = "visible";
+            alienResultScreen.style.display = "none";
           }
         }, 100);
       };
