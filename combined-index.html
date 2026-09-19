@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ALIEN + BONUS GAME</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #080319;
+      font-family: Arial, sans-serif;
+    }
+
+    #gameFrame {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #080319;
+    }
+
+    .resultScreen {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      background:
+        radial-gradient(circle at center, rgba(91, 32, 165, 0.95), rgba(7, 2, 35, 0.98));
+    }
+
+    .title {
+      margin-bottom: 20px;
+      color: #ffdc3e;
+      font-size: clamp(38px, 7vw, 92px);
+      font-weight: 900;
+      line-height: 1;
+      text-shadow:
+        5px 5px 0 #6d20a5,
+        0 0 22px #ff9224;
+    }
+
+    .score {
+      margin: 8px;
+      font-size: clamp(24px, 4vw, 54px);
+      font-weight: 900;
+    }
+
+    .p1 { color: #55eaff; }
+    .p2 { color: #ff6bba; }
+
+    .winner {
+      margin: 18px;
+      color: #ffe44d;
+      font-size: clamp(22px, 3vw, 42px);
+      font-weight: 900;
+    }
+
+    .nextStage {
+      margin-top: 16px;
+      font-size: clamp(18px, 2.4vw, 32px);
+      font-weight: 900;
+    }
+
+    .details {
+      margin: 14px;
+      font-size: clamp(15px, 2vw, 25px);
+      font-weight: 700;
+      line-height: 1.7;
+    }
+
+    #restartButton {
+      margin-top: 14px;
+      padding: 12px 34px;
+      border: 4px solid #ffdc42;
+      border-radius: 18px;
+      color: white;
+      background: linear-gradient(#8046ef, #41189f);
+      box-shadow: 0 7px 0 #281063, 0 0 18px #ffb62d;
+      font-size: clamp(17px, 2vw, 27px);
+      font-weight: 900;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <iframe
+    id="gameFrame"
+    src="alien-stage6.html"
+    title="シューティングゲーム"
+  ></iframe>
+
+  <div id="alienResultScreen" class="resultScreen">
+    <div class="title">ALIEN FINISH!</div>
+
+    <div class="score p1">
+      PLAYER 1　<span id="alienScore1">0</span>点
+    </div>
+
+    <div class="score p2">
+      PLAYER 2　<span id="alienScore2">0</span>点
+    </div>
+
+    <div id="alienWinner" class="winner"></div>
+
+    <div class="nextStage">
+      <span id="nextCount">5</span>秒後に BONUS STAGE！
+    </div>
+  </div>
+
+  <div id="allResultScreen" class="resultScreen">
+    <div class="title">ALL STAGES FINISH!</div>
+
+    <div class="score p1">
+      PLAYER 1 合計　<span id="totalScore1">0</span>点
+    </div>
+
+    <div class="score p2">
+      PLAYER 2 合計　<span id="totalScore2">0</span>点
+    </div>
+
+    <div id="allWinner" class="winner"></div>
+    <div id="scoreDetails" class="details"></div>
+
+    <button id="restartButton" type="button">
+      もう一度
+    </button>
+  </div>
+
+  <script>
+    const gameFrame = document.getElementById("gameFrame");
+    const alienResultScreen = document.getElementById("alienResultScreen");
+    const allResultScreen = document.getElementById("allResultScreen");
+    const nextCount = document.getElementById("nextCount");
+
+    let currentStage = "alien";
+    let alienFinished = false;
+    let bonusFinished = false;
+
+    const alienScores = [0, 0];
+    const bonusScores = [0, 0];
+
+    function numberFromText(text) {
+      const match = String(text).replaceAll(",", "").match(/-?\d+/);
+      return match ? Number(match[0]) : 0;
+    }
+
+    function winnerText(score1, score2) {
+      if (score1 > score2) {
+        return "🏆 PLAYER 1 WIN!";
+      }
+
+      if (score2 > score1) {
+        return "🏆 PLAYER 2 WIN!";
+      }
+
+      return "🤝 DRAW!";
+    }
+
+    function showAlienResult(score1, score2) {
+      alienScores[0] = score1;
+      alienScores[1] = score2;
+
+      document.getElementById("alienScore1").textContent = score1;
+      document.getElementById("alienScore2").textContent = score2;
+      document.getElementById("alienWinner").textContent =
+        winnerText(score1, score2);
+
+      alienResultScreen.style.display = "flex";
+
+      let seconds = 5;
+      nextCount.textContent = seconds;
+
+      const countdownTimer = setInterval(() => {
+        seconds--;
+        nextCount.textContent = Math.max(seconds, 0);
+
+        if (seconds <= 0) {
+          clearInterval(countdownTimer);
+          startBonusStage();
+        }
+      }, 1000);
+    }
+
+    function startBonusStage() {
+      currentStage = "bonus";
+      alienResultScreen.style.display = "none";
+
+      /*
+        ボーナスの最初のSTART画面が
+        一瞬見えないよう、読み込み中は隠す
+      */
+      gameFrame.style.visibility = "hidden";
+
+      gameFrame.onload = () => {
+        setTimeout(() => {
+          try {
+            const bonusWindow = gameFrame.contentWindow;
+            const bonusDocument = gameFrame.contentDocument;
+            const readyScreen = bonusDocument.getElementById("readyScreen");
+
+            if (readyScreen) {
+              readyScreen.style.display = "none";
+            }
+
+            /* 直接 3・2・1 の演出を始める */
+            if (typeof bonusWindow.runOpening === "function") {
+              bonusWindow.runOpening();
+            } else {
+              bonusDocument.getElementById("playButton")?.click();
+            }
+
+            gameFrame.style.visibility = "visible";
+          } catch (error) {
+            console.log("ボーナスステージを開始できませんでした", error);
+            gameFrame.style.visibility = "visible";
+          }
+        }, 100);
+      };
+
+      gameFrame.src = "bonus-stage4.html";
+    }
+
+    function showAllResults(score1, score2) {
+      bonusScores[0] = score1;
+      bonusScores[1] = score2;
+
+      const total1 = alienScores[0] + bonusScores[0];
+      const total2 = alienScores[1] + bonusScores[1];
+
+      document.getElementById("totalScore1").textContent = total1;
+      document.getElementById("totalScore2").textContent = total2;
+      document.getElementById("allWinner").textContent =
+        winnerText(total1, total2);
+
+      document.getElementById("scoreDetails").innerHTML =
+        `ALIEN：P1 ${alienScores[0]}点 ／ P2 ${alienScores[1]}点<br>` +
+        `BONUS：P1 ${bonusScores[0]}点 ／ P2 ${bonusScores[1]}点`;
+
+      allResultScreen.style.display = "flex";
+    }
+
+    function checkAlienStage(frameDocument) {
+      if (alienFinished) {
+        return;
+      }
+
+      const gameOverScreen = frameDocument.getElementById("gameOverScreen");
+
+      if (!gameOverScreen) {
+        return;
+      }
+
+      const isVisible =
+        getComputedStyle(gameOverScreen).display !== "none";
+
+      if (!isVisible) {
+        return;
+      }
+
+      alienFinished = true;
+
+      const score1 = numberFromText(
+        frameDocument.getElementById("finalScore1")?.textContent
+      );
+
+      const score2 = numberFromText(
+        frameDocument.getElementById("finalScore2")?.textContent
+      );
+
+      showAlienResult(score1, score2);
+    }
+
+    function checkBonusStage(frameDocument) {
+      if (bonusFinished) {
+        return;
+      }
+
+      const resultScreen = frameDocument.getElementById("resultScreen");
+
+      if (!resultScreen) {
+        return;
+      }
+
+      const isVisible =
+        getComputedStyle(resultScreen).display !== "none";
+
+      if (!isVisible) {
+        return;
+      }
+
+      bonusFinished = true;
+
+      const score1 = numberFromText(
+        frameDocument.getElementById("resultP1")?.textContent
+      );
+
+      const score2 = numberFromText(
+        frameDocument.getElementById("resultP2")?.textContent
+      );
+
+      showAllResults(score1, score2);
+    }
+
+    setInterval(() => {
+      try {
+        const frameDocument = gameFrame.contentDocument;
+
+        if (!frameDocument) {
+          return;
+        }
+
+        if (currentStage === "alien") {
+          checkAlienStage(frameDocument);
+        } else if (currentStage === "bonus") {
+          checkBonusStage(frameDocument);
+        }
+      } catch (error) {
+        console.log("ステージ確認中", error);
+      }
+    }, 250);
+
+    document.getElementById("restartButton").addEventListener("click", () => {
+      location.reload();
+    });
+  </script>
+</body>
+</html>
