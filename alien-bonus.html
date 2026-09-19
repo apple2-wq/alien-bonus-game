@@ -197,22 +197,40 @@
     function startBonusStage() {
       currentStage = "bonus";
       alienResultScreen.style.display = "none";
-      gameFrame.src = "bonus-stage4.html";
+
+      /*
+        ボーナスの最初のSTART画面が
+        一瞬見えないよう、読み込み中は隠す
+      */
+      gameFrame.style.visibility = "hidden";
 
       gameFrame.onload = () => {
         setTimeout(() => {
           try {
+            const bonusWindow = gameFrame.contentWindow;
             const bonusDocument = gameFrame.contentDocument;
-            const playButton = bonusDocument.getElementById("playButton");
+            const readyScreen = bonusDocument.getElementById("readyScreen");
 
-            if (playButton) {
-              playButton.click();
+            if (readyScreen) {
+              readyScreen.style.display = "none";
             }
+
+            /* 直接 3・2・1 の演出を始める */
+            if (typeof bonusWindow.runOpening === "function") {
+              bonusWindow.runOpening();
+            } else {
+              bonusDocument.getElementById("playButton")?.click();
+            }
+
+            gameFrame.style.visibility = "visible";
           } catch (error) {
             console.log("ボーナスステージを開始できませんでした", error);
+            gameFrame.style.visibility = "visible";
           }
-        }, 300);
+        }, 100);
       };
+
+      gameFrame.src = "bonus-stage4.html";
     }
 
     function showAllResults(score1, score2) {
