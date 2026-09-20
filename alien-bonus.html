@@ -222,7 +222,20 @@ function prepareLoadedStage(){
   }catch(error){console.log("ステージ開始エラー",error);gameFrame.style.visibility="visible";stageResultScreen.style.display="none"}
 }
 gameFrame.addEventListener("load",()=>setTimeout(prepareLoadedStage,100));
-setInterval(()=>{if(stageHandled)return;try{const result=gameFrame.contentWindow.stageResult;if(result?.finished)handleStageFinished(result)}catch(error){console.log("結果待機中",error)}},150);
+setInterval(()=>{
+  if(stageHandled)return;
+  try{
+    const result=gameFrame.contentWindow.stageResult;
+    const expectedStage=STAGES[currentStageIndex].id;
+
+    /* 切替中に前のステージの結果を読み直さない */
+    if(result?.finished&&result.stage===expectedStage){
+      handleStageFinished(result);
+    }
+  }catch(error){
+    console.log("結果待機中",error);
+  }
+},150);
 document.getElementById("playAgainButton").addEventListener("click",()=>location.reload());
 document.getElementById("resetRecordsButton").addEventListener("click",()=>{
   const answer=prompt("記録を全部消す場合は RESET と入力してください");if(answer!=="RESET")return;
