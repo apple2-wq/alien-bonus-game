@@ -1584,6 +1584,14 @@ let score2 =
   0;
 
 
+/* ヒット率用 */
+
+let shots1 = 0;
+let shots2 = 0;
+let hits1 = 0;
+let hits2 = 0;
+
+
 let timeLeft =
   GAME_TIME;
 
@@ -2867,6 +2875,15 @@ function shootWithCrosshair(
   }
 
 
+  if (player === 1) {
+    shots1++;
+  }
+
+  else {
+    shots2++;
+  }
+
+
   const crosshair =
 
     player === 1
@@ -3053,6 +3070,8 @@ function hitAlien(
     player === 1
   ) {
 
+    hits1++;
+
     score1 +=
       points;
 
@@ -3063,6 +3082,8 @@ function hitAlien(
   }
 
   else {
+
+    hits2++;
 
     score2 +=
       points;
@@ -3651,6 +3672,14 @@ function startIntro() {
     0;
 
 
+  shots1 = 0;
+  shots2 = 0;
+  hits1 = 0;
+  hits2 = 0;
+
+  window.stageResult = null;
+
+
   timeLeft =
     GAME_TIME;
 
@@ -4134,6 +4163,18 @@ function endGame() {
     score2;
 
 
+  window.stageResult = {
+    finished: true,
+    stage: "alien",
+    score1,
+    score2,
+    shots1,
+    shots2,
+    hits1,
+    hits2
+  };
+
+
   if (
     score1 > score2
   ) {
@@ -4219,6 +4260,9 @@ game.addEventListener(
       return;
 
     }
+
+
+    shots1++;
 
 
     const activeAliens =

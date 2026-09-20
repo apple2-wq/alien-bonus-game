@@ -1160,6 +1160,8 @@ const players = [
     y: .55,
 
     score: 0,
+    shots: 0,
+    hits: 0,
 
     crosshair:
       crosshair1,
@@ -1172,6 +1174,8 @@ const players = [
     y: .55,
 
     score: 0,
+    shots: 0,
+    hits: 0,
 
     crosshair:
       crosshair2,
@@ -1942,6 +1946,12 @@ function startActualGame() {
 
   players[0].score = 0;
   players[1].score = 0;
+  players[0].shots = 0;
+  players[1].shots = 0;
+  players[0].hits = 0;
+  players[1].hits = 0;
+
+  window.stageResult = null;
 
 
   /*
@@ -2751,6 +2761,9 @@ function shoot(player) {
   }
 
 
+  player.shots++;
+
+
   const gameRect =
     game.getBoundingClientRect();
 
@@ -2845,6 +2858,8 @@ function hitTarget(
 
   player.score +=
     target.score;
+
+  player.hits++;
 
 
   updateScores();
@@ -3102,6 +3117,18 @@ function endGame() {
   const total =
     players[0].score +
     players[1].score;
+
+
+  window.stageResult = {
+    finished: true,
+    stage: "bonus",
+    score1: players[0].score,
+    score2: players[1].score,
+    shots1: players[0].shots,
+    shots2: players[1].shots,
+    hits1: players[0].hits,
+    hits2: players[1].hits
+  };
 
 
   totalScore.textContent =
