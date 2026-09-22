@@ -48,9 +48,14 @@ button,input{font:inherit}
 /* 左・真ん中のランキングだけ下げる */
 .rank-card:nth-child(1) .ranking-list,
 .rank-card:nth-child(2) .ranking-list {
-    top: 31%;
+    top: 29.5%;
     line-height: 1.8;
 }
+/* ステージ別得点を少し読みやすく */
+.stage-details {
+    font-size: clamp(8px, 0.82vw, 14px);
+}
+
 </style>
 </head>
 <body>
