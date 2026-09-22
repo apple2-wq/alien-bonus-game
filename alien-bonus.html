@@ -32,22 +32,24 @@ button,input{font:inherit}
 .player-card .label-plate:nth-of-type(4) {
     top: 44.3%;
 }
-
 .accuracy {
     top: 46.4%;
 }
-
 .stage-details {
     top: 53.3%;
 }
-
 /* 下3枠の中身だけ下へ */
 .ranking-list {
     top: 22%;
 }
-
 .pair-box {
     top: 18%;
+}
+/* 左・真ん中のランキングだけ下げる */
+.rank-card:nth-child(1) .ranking-list,
+.rank-card:nth-child(2) .ranking-list {
+    top: 28%;
+    line-height: 1.65;
 }
 </style>
 </head>
