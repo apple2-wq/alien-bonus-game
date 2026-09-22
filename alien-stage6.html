@@ -3210,14 +3210,24 @@ function showPoints(
   }
 
 
-  if (
-    points < 0
-  ) {
+  if (points < 0) {
+  // 文字色でプレイヤーを区別
+  popup.style.color =
+    player === 1
+      ? "#55eaff"
+      : "#ff6bba";
 
-    popup.style.color =
-      "#ff3b3b";
+  // 赤い縁取り＋減点グロー
+  popup.style.webkitTextStroke =
+    "2px #ff3030";
 
-  }
+  popup.style.textShadow =
+    "0 0 3px #720000, " +
+    "0 0 8px #ff3030, " +
+    "0 0 16px #ff0000";
+
+  popup.style.fontWeight = "900";
+}
 
   else if (
     points === 10000
