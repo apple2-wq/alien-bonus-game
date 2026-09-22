@@ -2453,10 +2453,9 @@ function createHoles() {
    CLEAR HOLE
 ======================================== */
 
-function clearHole(
-  hole,
-  alien
-) {
+function clearHole(hole, alien) {
+  // 引っ込む途中の穴を再利用しない
+  hole.classList.add("cooldown");
 
   hole.classList.remove(
     "active",
@@ -2465,11 +2464,12 @@ function clearHole(
     "enemy"
   );
 
+  alien.classList.remove("shot");
 
-  alien.classList.remove(
-    "shot"
-  );
-
+  // 引っ込むアニメーションが終わってから再利用可能にする
+  setTimeout(() => {
+    hole.classList.remove("cooldown");
+  }, 400);
 }
 
 
@@ -2510,14 +2510,11 @@ function showRandomAlien() {
 
 
   const emptyHoles =
-    holes.filter(
-
-      hole =>
-        !hole.classList.contains(
-          "active"
-        )
-
-    );
+  holes.filter(
+    hole =>
+      !hole.classList.contains("active") &&
+      !hole.classList.contains("cooldown")
+  );
 
 
   if (
