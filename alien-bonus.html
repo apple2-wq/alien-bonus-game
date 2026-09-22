@@ -10,10 +10,77 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#080319;col
 button,input{font:inherit}
 #gameFrame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#080319}
 .overlay{position:fixed;inset:0;z-index:10000;display:none}
-#stageResultScreen{flex-direction:column;justify-content:center;align-items:center;text-align:center;background:radial-gradient(circle at 50% 40%,rgba(110,46,184,.97),rgba(7,2,35,.99))}
-.stage-finish-title{color:#ffe457;font-size:clamp(38px,7vw,92px);font-weight:1000;letter-spacing:.04em;text-shadow:5px 5px 0 #5a1c92,0 0 24px #ff9c25}
-.stage-score-row{display:flex;gap:clamp(24px,8vw,130px);margin:26px 0 18px}.stage-score{font-size:clamp(24px,4vw,54px);font-weight:1000}.p1-color{color:#55eaff}.p2-color{color:#ff6bba}
-#nextStageText{font-size:clamp(18px,2.6vw,34px);font-weight:900}#nextSeconds{color:#ffe457;font-size:1.35em}
+#stageResultScreen {
+  align-items: center;
+  justify-content: center;
+  background: #080319;
+}
+#stageResultFrame {
+  position: relative;
+  width: min(100vw, 177.78vh);
+  height: min(100vh, 56.25vw);
+
+  background-image: url("./farm-alien-result.png");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+/* P1・P2の得点 */
+.stage-score-row {
+  position: absolute;
+  left: 18.6%;
+  top: 42.5%;
+  width: 64.5%;
+  height: 17%;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5.3%;
+  margin: 0;
+}
+.stage-score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(30px, 4.5vw, 74px);
+  font-weight: 1000;
+  text-shadow:
+    0 3px 0 #332014,
+    0 0 12px rgba(255, 255, 255, 0.7);
+}
+.stage-score small {
+  margin-left: 0.15em;
+  font-size: 0.42em;
+}
+.p1-color {
+  color: #55eaff;
+}
+.p2-color {
+  color: #ff6bba;
+}
+/* 右下のカウントダウン */
+#nextStageText {
+  position: absolute;
+  right: 7.4%;
+  top: 68%;
+  width: 12%;
+  height: 17%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#nextSeconds {
+  color: #ffe457;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(34px, 5.5vw, 90px);
+  font-weight: 1000;
+  text-shadow:
+    0 4px 0 #57270f,
+    0 0 14px #ff9c25;
+}
 #finalResultScreen{overflow:hidden;background:#130d09}
 .result-frame{position:absolute;left:50%;top:50%;width:min(100vw,177.78vh);height:min(100vh,56.25vw);transform:translate(-50%,-50%);overflow:hidden;background-image:url("./result-screen-western-v2-light.webp?v=3");background-position:center;background-size:100% 100%;background-repeat:no-repeat;color:#392413;font-family:Georgia,"Times New Roman","Hiragino Mincho ProN",serif;text-shadow:0 1px 0 rgba(255,255,255,.55)}
 .final-title{display:none}
@@ -79,12 +146,21 @@ button,input{font:inherit}
 <iframe id="gameFrame" src="friend-stage/index.html" title="3ステージシューティングゲーム"></iframe>
 
 <div id="stageResultScreen" class="overlay">
-  <div id="stageFinishTitle" class="stage-finish-title">STAGE FINISH!</div>
-  <div class="stage-score-row">
-    <div class="stage-score p1-color">🩵 水色　<span id="stageScore1">0</span>点</div>
-    <div class="stage-score p2-color">🩷 ピンク　<span id="stageScore2">0</span>点</div>
+  <div id="stageResultFrame">
+    <div class="stage-score-row">
+      <div class="stage-score p1-color">
+        <span id="stageScore1">0</span><small>点</small>
+      </div>
+
+      <div class="stage-score p2-color">
+        <span id="stageScore2">0</span><small>点</small>
+      </div>
+    </div>
+
+    <div id="nextStageText">
+      <span id="nextSeconds">5</span>
+    </div>
   </div>
-  <div id="nextStageText"><span id="nextSeconds">5</span>秒後に次のステージ！</div>
 </div>
 
 <div id="finalResultScreen" class="overlay">
