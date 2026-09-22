@@ -821,26 +821,37 @@ body {
 }
 
 
-/* 500点：赤い的に合わせた表示 */
-.plusScore {
-  color: #e7352b;
+/* P1の得点 */
+.plusScore.p1 {
+  color: #55eaff;
   font-size: clamp(32px, 4vw, 48px);
   font-weight: 900;
-  -webkit-text-stroke: 1.5px #fff0c8;
+  -webkit-text-stroke: 1.5px #075d75;
   text-shadow:
-    0 0 4px #7a160f,
-    0 0 10px #ff4a32;
+    0 0 5px #55eaff,
+    0 0 12px #00bfff;
 }
 
-/* 1000点：金色で少し豪華に */
-.plusScore.special {
-  color: #ffd84a;
-  font-size: clamp(40px, 5vw, 60px);
-  -webkit-text-stroke: 2px #7a3d00;
+/* P2の得点 */
+.plusScore.p2 {
+  color: #ff6bba;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 900;
+  -webkit-text-stroke: 1.5px #7a174d;
   text-shadow:
-    0 0 5px #fff6a0,
-    0 0 12px #ffb300,
-    0 0 22px #ff7a00;
+    0 0 5px #ff6bba,
+    0 0 12px #ff2d95;
+}
+
+/* 1000点だけ金色のキラキラを追加 */
+.plusScore.special {
+  font-size: clamp(40px, 5vw, 60px);
+  -webkit-text-stroke: 2px #ffca28;
+  text-shadow:
+    0 0 4px #ffffff,
+    0 0 9px #fff36b,
+    0 0 16px #ffb300,
+    0 0 25px #ff7a00;
 }
 
 </style>
@@ -2909,9 +2920,9 @@ function hitTarget(
 
 
   plus.className =
-    target.special
-      ? "plusScore special"
-      : "plusScore";
+  "plusScore " +
+  (player === 1 ? "p1" : "p2") +
+  (target.special ? " special" : "");
 
 
   plus.textContent =
