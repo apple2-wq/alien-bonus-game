@@ -25,21 +25,24 @@ button,input{font:inherit}
 #stageCharacterImage{
   display:none;
   position:absolute;
-  left:4.8%;
-  top:67.0%;
-  z-index:2;
-  width:16.8%;
-  height:25%;
+  left:4.3%;
+  top:66.3%;
+  z-index:5;
+  width:18%;
+  height:27%;
   object-fit:contain;
   object-position:center bottom;
   border-radius:50%;
   clip-path:circle(47% at 50% 50%);
-  filter:drop-shadow(0 .35vw .25vw rgba(43,22,10,.45))
+  filter:drop-shadow(0 .35vw .25vw rgba(43,22,10,.45));
 }
 
+.alien-result #stageCharacterImage.has-image{
+  display:block;
+}
 .alien-result .stage-countdown{
   position:absolute;
-  right:5.0%;
+  right:6.8%;
   top:66.7%;
   z-index:3;
   display:flex;
@@ -53,7 +56,7 @@ button,input{font:inherit}
   line-height:1;
   text-shadow:0 3px 0 #fff3c7,0 0 8px rgba(255,255,255,.85),0 4px 7px rgba(50,25,8,.38)
 }
-.alien-result .stage-countdown{position:absolute;right:5.2%;top:69.3%;z-index:3;display:flex;align-items:center;justify-content:center;width:14.5%;height:21.8%;color:#5b3216;font-size:clamp(44px,8.2vw,132px);font-weight:1000;line-height:1;text-shadow:0 3px 0 #fff3c7,0 0 8px rgba(255,255,255,.85),0 4px 7px rgba(50,25,8,.38)}
+.alien-result .stage-countdown{position:absolute;right:6.8%;top:66.7%;z-index:3;display:flex;align-items:center;justify-content:center;width:14.5%;height:21.8%;color:#5b3216;font-size:clamp(44px,8.2vw,132px);font-weight:1000;line-height:1;text-shadow:0 3px 0 #fff3c7,0 0 8px rgba(255,255,255,.85),0 4px 7px rgba(50,25,8,.38)}
 .stage-countdown.count-pop{animation:stageCountPop .45s ease-out}
 @keyframes stageCountPop{0%{transform:scale(.55);opacity:.15}65%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}
 .stage-finish-title{color:#ffe457;font-size:clamp(38px,7vw,92px);font-weight:1000;letter-spacing:.04em;text-shadow:5px 5px 0 #5a1c92,0 0 24px #ff9c25}
@@ -69,10 +72,86 @@ button,input{font:inherit}
 .score-digits{position:absolute;left:14%;top:24.2%;width:72%;height:16.2%;display:flex;align-items:center;justify-content:center;gap:.65%;margin:0}.digit{display:grid;place-items:center;width:14.8%;height:76%;border:clamp(1px,.25vw,4px) solid #a79578;border-radius:clamp(2px,.5vw,8px);background:linear-gradient(#fffdf3,#e9ddc4);box-shadow:inset 0 0 .7vw rgba(67,42,20,.17),0 .35vw 0 #a89472;font-family:Georgia,serif;font-size:clamp(20px,4vw,65px);font-weight:1000;line-height:1}.p1-card .digit{color:#087e9c}.p2-card .digit{color:#ba245e}
 .accuracy{position:absolute;left:14%;top:44.8%;width:72%;height:8.5%;display:flex;align-items:center;justify-content:center;color:#422b1d;font-size:clamp(19px,3.2vw,54px);font-weight:1000;text-shadow:0 2px 0 #fff}.stage-details{position:absolute;left:14%;top:52.3%;width:72%;color:#513721;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:clamp(7px,.72vw,12px);font-weight:900;line-height:1.15;text-shadow:none}
 .rank-grid{position:absolute;inset:0}.rank-card{position:absolute;top:59.8%;height:25.3%;padding:0 2% 1%;border:0;background:none;color:#4a301c}.rank-card:nth-child(1){left:3.3%;width:30%}.rank-card:nth-child(2){left:35.2%;width:29.6%}.rank-card:nth-child(3){left:66.4%;width:30.2%}.rank-card h3{position:absolute;left:5%;top:1.5%;width:90%;height:10%;display:flex;align-items:center;justify-content:center;margin:0;color:#fff0d0;font-size:clamp(9px,1.18vw,20px);font-weight:1000;line-height:1;text-align:center;text-shadow:0 2px 0 #3b2518}
-.ranking-list{position:absolute;left:11%;top:24%;width:78%;margin:0;padding-left:13%;font-size:clamp(9px,1.05vw,18px);font-weight:1000;line-height:1.72}.ranking-list li::marker{color:#a66a13;font-weight:1000}.rank-line{display:block;text-align:right}.rank-line span:last-child{font-size:1.05em}
+.ranking-list{
+  position:absolute;
+  left:11%;
+  top:24%;
+  width:78%;
+  margin:0;
+  padding-left:13%;
+  font-size:clamp(9px,1.05vw,18px);
+  font-weight:1000;
+  line-height:2.05;
+}.rank-line{display:block;text-align:right}.rank-line span:last-child{font-size:1.05em}
 .pair-box{position:absolute;left:4%;top:19%;width:92%;height:62%;display:grid;grid-template-columns:1fr 1fr;gap:3%}.pair-record{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 2%;border-radius:0;background:none;text-align:center}.pair-record small{display:block;color:#6d4b2d;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:clamp(7px,.85vw,14px);font-weight:900}.pair-record strong{display:block;margin:3% 0;color:#9b5a09;font-size:clamp(12px,1.65vw,28px);white-space:nowrap}.pair-record span{max-width:100%;overflow:hidden;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:clamp(7px,.8vw,13px);font-weight:900;white-space:nowrap;text-overflow:ellipsis}
 .button-row{position:absolute;left:31.5%;top:86.5%;width:37%;height:9%;display:flex;align-items:center;justify-content:center;margin:0}.main-button,.staff-button,.modal-button{cursor:pointer}.main-button{width:100%;height:100%;padding:0;border:0;background:transparent;color:#fff5d2;font-family:Georgia,"Times New Roman",serif;font-size:clamp(14px,2vw,34px);font-weight:1000;letter-spacing:.08em;text-shadow:0 3px 0 #361b0e,0 0 5px #000}.main-button small{display:block;margin-top:-1%;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:.42em;letter-spacing:.08em}.staff-button{position:fixed;right:1.6%;bottom:1.8%;padding:.35em .7em;border:1px solid rgba(255,255,255,.65);border-radius:6px;background:rgba(25,15,10,.74);color:#fff;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:clamp(7px,.7vw,11px);font-weight:800}
-#nameModal{z-index:20000;justify-content:center;align-items:center;padding:20px;background:rgba(0,0,0,.82)}.modal-card{width:min(520px,94vw);padding:24px;border:5px solid #ffe154;border-radius:20px;background:linear-gradient(#48227e,#1d0c48);box-shadow:0 0 30px #ffad2d;text-align:center}#nameModalTitle{margin:0 0 8px;font-size:clamp(23px,4vw,38px)}.name-note{margin:0 0 14px;color:#f4eaff;font-size:14px}#nameInput{width:100%;padding:12px;border:3px solid #d9c8ff;border-radius:12px;font-size:24px;text-align:center}.modal-button{margin-top:15px;background:#d94b28}
+#nameModal{
+  z-index:20000;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  background:rgba(20,10,4,.78);
+}
+
+.modal-card{
+  width:min(540px,92vw);
+  padding:26px 30px;
+  border:8px ridge #8b572a;
+  border-radius:12px;
+  background:
+    linear-gradient(rgba(255,244,214,.96),rgba(222,188,135,.96)),
+    #d5b074;
+  box-shadow:
+    0 0 0 4px #3d2412,
+    0 10px 30px rgba(0,0,0,.65),
+    inset 0 0 22px rgba(92,47,14,.35);
+  color:#4a2b14;
+  text-align:center;
+  font-family:Georgia,"Times New Roman","Yu Mincho","Hiragino Mincho ProN",serif;
+}
+
+#nameModalTitle{
+  margin:0 0 10px;
+  color:#6d3512;
+  font-size:clamp(26px,4vw,42px);
+  font-weight:1000;
+  letter-spacing:.04em;
+  text-shadow:0 2px 0 #f7dfad;
+}
+
+.name-note{
+  margin:0 0 16px;
+  color:#5a3921;
+  font-size:15px;
+  font-weight:800;
+}
+
+#nameInput{
+  width:100%;
+  padding:12px 14px;
+  border:4px solid #8b572a;
+  border-radius:5px;
+  background:#fff8df;
+  color:#3e2617;
+  font-size:24px;
+  font-family:Georgia,"Yu Mincho","Hiragino Mincho ProN",serif;
+  text-align:center;
+  box-shadow:inset 0 2px 7px rgba(82,45,20,.25);
+}
+
+.modal-button{
+  margin-top:16px;
+  padding:10px 28px;
+  border:4px solid #5a3217;
+  border-radius:6px;
+  background:linear-gradient(#a9652f,#6d3718);
+  color:#fff2c7;
+  font-size:20px;
+  font-weight:1000;
+  font-family:Georgia,"Times New Roman",serif;
+  text-shadow:0 2px 0 #2d170b;
+  box-shadow:0 5px 0 #3b1f0f;
+}
 
 
 /* ハート削除後も文字色は水色・ピンクを維持 */
@@ -136,7 +215,7 @@ button,input{font:inherit}
 
 /* カウントダウンを少し左へ */
 .alien-result .stage-countdown {
-  right: 7.2%;
+  right: 6.8%;
 }
 
 
