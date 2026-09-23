@@ -3224,13 +3224,22 @@ function showPoints(
 
 
   if (
-    points < 0
-  ) {
+  points < 0
+) {
+  popup.style.color =
+    player === 1
+      ? "#55eaff"
+      : "#ff6bba";
 
-    popup.style.color =
-      "#ff3b3b";
+  popup.style.webkitTextStroke =
+    "2px #ff3030";
 
-  }
+  popup.style.textShadow =
+    "0 0 4px #ff3030," +
+    "0 0 9px #ff3030," +
+    "0 0 15px rgba(255,48,48,.75)," +
+    "0 2px 4px rgba(0,0,0,.75)";
+}
 
   else if (
     points === 10000
