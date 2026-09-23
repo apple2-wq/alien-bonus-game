@@ -2573,8 +2573,18 @@ function showRandomAlien() {
     spawnId;
 
 
-  alien.src =
-    character.image;
+/* 前のキャラクター画像が一瞬残るのを防ぐ */
+alien.style.visibility = "hidden";
+
+alien.onload = () => {
+  if (
+    hole.dataset.spawnId === spawnId
+  ) {
+    alien.style.visibility = "visible";
+  }
+};
+
+alien.src = character.image;
 
 
   alien.dataset.points =
