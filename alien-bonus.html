@@ -22,9 +22,37 @@ button,input{font:inherit}
 .stage-result-digits{display:flex;align-items:center;justify-content:center;width:100%;height:100%;gap:1.2%}
 .stage-result-digit{display:grid;place-items:center;width:14.2%;height:76%;border:clamp(1px,.22vw,4px) solid #a79578;border-radius:clamp(3px,.5vw,9px);background:linear-gradient(#fffdf3,#e9ddc4);box-shadow:inset 0 0 .7vw rgba(67,42,20,.17),0 .35vw 0 #a89472;font-size:clamp(22px,4.1vw,68px);font-weight:1000;line-height:1;text-shadow:0 2px 0 #fff,0 3px 5px rgba(40,20,10,.24)}
 .alien-result .p1-color .stage-result-digit{color:#087e9c}.alien-result .p2-color .stage-result-digit{color:#ba245e}
-#stageCharacterImage{display:none;position:absolute;left:5.3%;top:69.2%;z-index:2;width:14.2%;height:22%;object-fit:contain;object-position:center bottom;border-radius:50%;clip-path:circle(47% at 50% 50%);filter:drop-shadow(0 .35vw .25vw rgba(43,22,10,.45))}
-.alien-result #stageCharacterImage.has-image{display:block}
-.stage-countdown{display:none}
+#stageCharacterImage{
+  display:none;
+  position:absolute;
+  left:4.8%;
+  top:67.0%;
+  z-index:2;
+  width:16.8%;
+  height:25%;
+  object-fit:contain;
+  object-position:center bottom;
+  border-radius:50%;
+  clip-path:circle(47% at 50% 50%);
+  filter:drop-shadow(0 .35vw .25vw rgba(43,22,10,.45))
+}
+
+.alien-result .stage-countdown{
+  position:absolute;
+  right:5.0%;
+  top:66.7%;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:15.2%;
+  height:23.5%;
+  color:#5b3216;
+  font-size:clamp(44px,8.2vw,132px);
+  font-weight:1000;
+  line-height:1;
+  text-shadow:0 3px 0 #fff3c7,0 0 8px rgba(255,255,255,.85),0 4px 7px rgba(50,25,8,.38)
+}
 .alien-result .stage-countdown{position:absolute;right:5.2%;top:69.3%;z-index:3;display:flex;align-items:center;justify-content:center;width:14.5%;height:21.8%;color:#5b3216;font-size:clamp(44px,8.2vw,132px);font-weight:1000;line-height:1;text-shadow:0 3px 0 #fff3c7,0 0 8px rgba(255,255,255,.85),0 4px 7px rgba(50,25,8,.38)}
 .stage-countdown.count-pop{animation:stageCountPop .45s ease-out}
 @keyframes stageCountPop{0%{transform:scale(.55);opacity:.15}65%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}
@@ -75,48 +103,26 @@ button,input{font:inherit}
   top: 21.2%;
 }
 
-.player-card .label-plate:nth-of-type(4) {
-  top: 43.5%;
+.player-card .label-plate:nth-of-type(4){
+  top:44.5% !important;
 }
 
-.score-digits {
-  left: 14%;
-  top: 24.2%;
-  width: 72%;
-  height: 16.2%;
+.accuracy{
+  top:46.0% !important;
 }
 
-.accuracy {
-  left: 14%;
-  top: 44.8%;
-  width: 72%;
-  height: 8.5%;
+.stage-details{
+  top:53.0% !important;
 }
 
-.stage-details {
-  left: 14%;
-  top: 52.3%;
-  width: 72%;
+.rank-card:nth-child(1) .ranking-list,
+.rank-card:nth-child(2) .ranking-list{
+  top:30.5% !important;
+  line-height:1.8 !important;
 }
 
-.rank-card {
-  top: 59.8%;
-  height: 25.3%;
-}
-
-.rank-card h3 {
-  top: 1.5%;
-  height: 10%;
-}
-
-.ranking-list {
-  top: 24%;
-  line-height: 1.72;
-}
-
-.pair-box {
-  top: 19%;
-  height: 62%;
+.rank-card:nth-child(3) .pair-box{
+  top:21% !important;
 }
 
 
@@ -341,10 +347,26 @@ function showStageResult(result){
     stageCharacterImage.onerror=()=>stageCharacterImage.classList.remove("has-image");
   }
 
+  const showResultNow=()=>{
   stageResultScreen.style.display=isAlienStage?"block":"flex";
+
   let seconds=5;
   document.getElementById("nextSeconds").textContent=seconds;
   showStageCountdown(seconds);
+};
+
+if(isAlienStage){
+  const bg=new Image();
+  bg.src="./alien-bonus-result-character-space.png?v=1";
+  if(bg.complete){
+    showResultNow();
+  }else{
+    bg.onload=showResultNow;
+    bg.onerror=showResultNow;
+  }
+}else{
+  showResultNow();
+}
   const timer=setInterval(()=>{
     seconds--;
     document.getElementById("nextSeconds").textContent=Math.max(0,seconds);

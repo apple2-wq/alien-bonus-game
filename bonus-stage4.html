@@ -826,34 +826,42 @@ margin-top: -72.5px;
 }
 
 
-/* P1：水色＋赤いエフェクト */
+/* P1：通常は水色 */
 .plusScore.p1 {
   color: #55eaff;
-  text-shadow:
-    0 0 3px #7d0909,
-    0 0 8px #ff3030,
-    0 0 14px rgba(255, 48, 48, 0.78);
 }
 
-/* P2：ピンク＋赤いエフェクト */
+/* P2：通常はピンク */
 .plusScore.p2 {
   color: #ff6bba;
-  text-shadow:
-    0 0 3px #7d0909,
-    0 0 8px #ff3030,
-    0 0 14px rgba(255, 48, 48, 0.78);
 }
 
-/* ＋1000：黄色く光らせる */
+/* +1000共通：少し大きく */
 .plusScore.special {
-  position: absolute;
-  color: #ffe135;
   font-size: 52px;
+  font-weight: 900;
+}
+
+/* P1の+1000：水色文字＋黄色い縁・光 */
+.plusScore.p1.special {
+  color: #55eaff;
+  -webkit-text-stroke: 2px #ffe135;
   text-shadow:
-    0 0 4px #7a4300,
-    0 0 9px white,
-    0 0 16px #ffe135,
-    0 0 28px #ff9d00;
+    0 0 4px #ffe135,
+    0 0 9px #ffe135,
+    0 0 16px #ffb300,
+    0 2px 4px rgba(0,0,0,.75);
+}
+
+/* P2の+1000：ピンク文字＋黄色い縁・光 */
+.plusScore.p2.special {
+  color: #ff6bba;
+  -webkit-text-stroke: 2px #ffe135;
+  text-shadow:
+    0 0 4px #ffe135,
+    0 0 9px #ffe135,
+    0 0 16px #ffb300,
+    0 2px 4px rgba(0,0,0,.75);
 }
 
 .plusScore.special::before,
