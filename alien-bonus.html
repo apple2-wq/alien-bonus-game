@@ -334,46 +334,59 @@ async function showFinalResult(){
 function showStageResult(result){
   const stage=STAGES[currentStageIndex];
   const isAlienStage=stage.id==="alien";
+
   stageResultScreen.classList.toggle("alien-result",isAlienStage);
   document.getElementById("stageFinishTitle").textContent=`${stage.name} FINISH!`;
   renderStageDigits(document.getElementById("stageScore1"),result.score1);
   renderStageDigits(document.getElementById("stageScore2"),result.score2);
 
-  /* 左下の丸枠に表示するキャラクター画像 */
   const characterImage="Jessie.png";
   stageCharacterImage.classList.toggle("has-image",isAlienStage&&Boolean(characterImage));
+
   if(characterImage){
     stageCharacterImage.src=characterImage;
     stageCharacterImage.onerror=()=>stageCharacterImage.classList.remove("has-image");
   }
 
   const showResultNow=()=>{
-  stageResultScreen.style.display=isAlienStage?"block":"flex";
+    stageResultScreen.style.display=isAlienStage?"block":"flex";
 
-  let seconds=5;
-  document.getElementById("nextSeconds").textContent=seconds;
-  showStageCountdown(seconds);
-};
+    let seconds=5;
 
-if(isAlienStage){
-  const bg=new Image();
-  bg.src="./alien-bonus-result-character-space.png?v=1";
-  if(bg.complete){
-    showResultNow();
+    document.getElementById("nextSeconds").textContent=seconds;
+    showStageCountdown(seconds);
+
+    const timer=setInterval(()=>{
+      seconds--;
+
+      document.getElementById("nextSeconds").textContent=Math.max(0,seconds);
+
+      if(seconds>0){
+        showStageCountdown(seconds);
+      }
+
+      if(seconds<=0){
+        clearInterval(timer);
+        startNextStage();
+      }
+    },1000);
+  };
+
+  if(isAlienStage){
+    const bg=new Image();
+    bg.src="./alien-bonus-result-character-space.png?v=1";
+
+    if(bg.complete){
+      showResultNow();
+    }else{
+      bg.onload=showResultNow;
+      bg.onerror=showResultNow;
+    }
   }else{
-    bg.onload=showResultNow;
-    bg.onerror=showResultNow;
+    showResultNow();
   }
-}else{
-  showResultNow();
 }
-  const timer=setInterval(()=>{
-    seconds--;
-    document.getElementById("nextSeconds").textContent=Math.max(0,seconds);
-    if(seconds>0)showStageCountdown(seconds);
-    if(seconds<=0){clearInterval(timer);startNextStage()}
-  },1000);
-}
+
 function handleStageFinished(rawResult){
   if(stageHandled)return;
   stageHandled=true;
