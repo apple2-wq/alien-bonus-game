@@ -25,8 +25,8 @@ button,input{font:inherit}
 #stageCharacterImage{
   display:none;
   position:absolute;
-  left:3.8%;
-  top:67.2%;
+  left:4.3%;
+  top:67.7%;
   z-index:5;
   width:18%;
   height:27%;
@@ -42,8 +42,8 @@ button,input{font:inherit}
 }
 .alien-result .stage-countdown{
   position:absolute;
-  right:4.9%;
-  top:67.4%;
+  right:5.5%;
+  top:67.9%;
   z-index:3;
   display:flex;
   align-items:center;
@@ -56,7 +56,7 @@ button,input{font:inherit}
   line-height:1;
   text-shadow:0 3px 0 #fff3c7,0 0 8px rgba(255,255,255,.85),0 4px 7px rgba(50,25,8,.38)
 }
-.alien-result .stage-countdown{position:absolute;right:4.9%;top:67.4%;z-index:3;display:flex;align-items:center;justify-content:center;width:14.5%;height:21.8%;color:#5b3216;font-size:clamp(44px,8.2vw,132px);font-weight:1000;line-height:1;text-shadow:0 3px 0 #fff3c7,0 0 8px rgba(255,255,255,.85),0 4px 7px rgba(50,25,8,.38)}
+.alien-result .stage-countdown{position:absolute;right:5.5%;top:67.9%;z-index:3;display:flex;align-items:center;justify-content:center;width:14.5%;height:21.8%;color:#5b3216;font-size:clamp(44px,8.2vw,132px);font-weight:1000;line-height:1;text-shadow:0 3px 0 #fff3c7,0 0 8px rgba(255,255,255,.85),0 4px 7px rgba(50,25,8,.38)}
 .stage-countdown.count-pop{animation:stageCountPop .45s ease-out}
 @keyframes stageCountPop{0%{transform:scale(.55);opacity:.15}65%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}
 .stage-finish-title{color:#ffe457;font-size:clamp(38px,7vw,92px);font-weight:1000;letter-spacing:.04em;text-shadow:5px 5px 0 #5a1c92,0 0 24px #ff9c25}
@@ -85,7 +85,7 @@ button,input{font:inherit}
 .label-plate{position:absolute;left:18%;width:64%;margin:0;padding:0;border:0;background:none;box-shadow:none;color:#52351f;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:clamp(9px,1.25vw,21px);font-weight:1000;letter-spacing:.03em;text-shadow:none}.player-card .label-plate:nth-of-type(2){top:21.2%}.player-card .label-plate:nth-of-type(4){top:43.5%}
 .score-digits{position:absolute;left:14%;top:24.2%;width:72%;height:16.2%;display:flex;align-items:center;justify-content:center;gap:.65%;margin:0}.digit{display:grid;place-items:center;width:14.8%;height:76%;border:clamp(1px,.25vw,4px) solid #a79578;border-radius:clamp(2px,.5vw,8px);background:linear-gradient(#fffdf3,#e9ddc4);box-shadow:inset 0 0 .7vw rgba(67,42,20,.17),0 .35vw 0 #a89472;font-family:Georgia,serif;font-size:clamp(20px,4vw,65px);font-weight:1000;line-height:1}.p1-card .digit{color:#087e9c}.p2-card .digit{color:#ba245e}
 .accuracy{position:absolute;left:14%;top:44.8%;width:72%;height:8.5%;display:flex;align-items:center;justify-content:center;color:#422b1d;font-size:clamp(19px,3.2vw,54px);font-weight:1000;text-shadow:0 2px 0 #fff}.stage-details{position:absolute;left:14%;top:52.3%;width:72%;color:#513721;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:clamp(7px,.72vw,12px);font-weight:900;line-height:1.15;text-shadow:none}
-.rank-grid{position:absolute;inset:0}.rank-card{position:absolute;top:59.8%;height:25.3%;padding:0 2% 1%;border:0;background:none;color:#4a301c}.rank-card:nth-child(1){left:3.3%;width:30%}.rank-card:nth-child(2){left:35.2%;width:29.6%}.rank-card:nth-child(3){left:66.4%;width:30.2%}.rank-card h3{position:absolute;left:5%;top:3.6%;width:90%;height:10%;display:flex;align-items:center;justify-content:center;margin:0;color:#fff0d0;font-size:clamp(9px,1.18vw,20px);font-weight:1000;line-height:1;text-align:center;text-shadow:0 2px 0 #3b2518}
+.rank-grid{position:absolute;inset:0}.rank-card{position:absolute;top:59.8%;height:25.3%;padding:0 2% 1%;border:0;background:none;color:#4a301c}.rank-card:nth-child(1){left:3.3%;width:30%}.rank-card:nth-child(2){left:35.2%;width:29.6%}.rank-card:nth-child(3){left:66.4%;width:30.2%}.rank-card h3{position:absolute;left:5%;top:4.5%;width:90%;height:10%;display:flex;align-items:center;justify-content:center;margin:0;color:#fff0d0;font-size:clamp(9px,1.18vw,20px);font-weight:1000;line-height:1;text-align:center;text-shadow:0 2px 0 #3b2518}
 .ranking-list{
   position:absolute;
   left:11%;
@@ -215,14 +215,14 @@ button,input{font:inherit}
 }
 
 .rank-card:nth-child(1) .ranking-list{
-  left:4% !important;
+  left:1% !important;
   width:88% !important;
   padding-left:10% !important;
 }
 
 .rank-card:nth-child(1) .rank-line{
   justify-content:center !important;
-  padding-left:6%;
+  padding-left:0%;
 }
 
 .ranking-list li{
@@ -244,15 +244,15 @@ button,input{font:inherit}
 
 /* Jessieを大きくして少し右へ */
 #stageCharacterImage {
-  left: 3.8%;
-  top: 67.2%;
+  left: 4.3%;
+  top: 67.7%;
   width: 17.5%;
   height: 25.5%;
 }
 
 /* カウントダウンを少し左へ */
 .alien-result .stage-countdown {
-  right: 4.2%;
+  right: 5.5%;
 }
 
 
