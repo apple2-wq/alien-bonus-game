@@ -328,16 +328,35 @@ button,input{font:inherit}
   top: 21.2%;
 }
 
-.player-card .label-plate:nth-of-type(4){
-  top:43.5% !important;
+/* 「ヒット率」を少し左へ */
+.label-plate:nth-of-type(4) {
+  left: 19% !important;
+  top: 43.5% !important;
+  width: 28.5% !important;
+  height: 8.5% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  padding: 0 !important;
+  font-size: clamp(14px, 1.6vw, 27px) !important;
+  white-space: nowrap !important;
 }
 
-.accuracy{
-  top: 44.8% !important;
+/* 数字との間を少し広げる */
+.accuracy {
+  left: 50.5% !important;
+  top: 43.5% !important;
+  width: 27% !important;
+  height: 8.5% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
 }
 
-.stage-details{
-  top: 53.8% !important;
+/* ステージ別得点を見やすく */
+.stage-details {
+  top: 52.8% !important;
+  font-size: clamp(8px, 0.78vw, 13px) !important;
 }
 
 .rank-card:nth-child(1) .ranking-list,
