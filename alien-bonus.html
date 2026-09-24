@@ -512,6 +512,32 @@ button,input{font:inherit}
     scale(1.4);
 }
 
+/* 最終結果画面の文字位置調整 */
+
+/* 「トータルスコア」を少し下へ */
+.player-card .label-plate:nth-of-type(2) {
+  top: 22.4%;
+}
+
+/* 「ヒット率」を数字の左側へ */
+.player-card .label-plate:nth-of-type(4) {
+  left: 15%;
+  top: 45.2%;
+  width: 30%;
+  height: 8%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* ヒット率の数字 */
+.accuracy {
+  left: 46%;
+  top: 44.8%;
+  width: 30%;
+  height: 8.5%;
+  justify-content: flex-start;
+}
 
 </style>
 </head>
