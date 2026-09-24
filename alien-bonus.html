@@ -353,10 +353,10 @@ button,input{font:inherit}
   justify-content: flex-start !important;
 }
 
-/* ステージ別得点を見やすく */
+/* ステージ別得点を元の位置・大きさへ戻す */
 .stage-details {
-  top: 52.8% !important;
-  font-size: clamp(8px, 0.78vw, 13px) !important;
+  top: 52.3% !important;
+  font-size: clamp(7px, 0.72vw, 12px) !important;
 }
 
 .rank-card:nth-child(1) .ranking-list,
@@ -570,9 +570,10 @@ button,input{font:inherit}
   top: 52.8% !important;
 }
 
-/* TOP3の順位を少し右へ */
+/* TOP3を上に戻して少し右へ */
 .ranking-list {
   left: 13% !important;
+  top: 20% !important;
   width: 76% !important;
   padding-left: 15% !important;
 }
