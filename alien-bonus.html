@@ -519,24 +519,35 @@ button,input{font:inherit}
   top: 22.4%;
 }
 
-/* 「ヒット率」を数字の左側へ */
+/* 「ヒット率」を数字のすぐ左へ */
 .player-card .label-plate:nth-of-type(4) {
-  left: 15%;
-  top: 45.2%;
-  width: 30%;
-  height: 8%;
+  left: 20%;
+  top: 43.7%;
+  width: 27%;
+  height: 8.5%;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  padding-right: 1.5%;
+  font-size: clamp(12px, 1.45vw, 24px);
+  white-space: nowrap;
 }
 
-/* ヒット率の数字 */
+/* ヒット率の数字を少し上へ */
 .accuracy {
-  left: 46%;
-  top: 44.8%;
+  left: 48%;
+  top: 43.6%;
   width: 30%;
   height: 8.5%;
+  display: flex;
+  align-items: center;
   justify-content: flex-start;
+  font-size: clamp(22px, 3.2vw, 54px);
+}
+
+/* FARM・ALIEN・BONUSの得点も少し上へ */
+.stage-details {
+  top: 50.8%;
 }
 
 </style>
