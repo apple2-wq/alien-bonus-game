@@ -398,6 +398,10 @@ button,input{font:inherit}
   background: #160c06;
 }
 
+#westernTransition.open {
+  background: transparent;
+}
+
 .western-door {
   position: absolute;
   top: 0;
@@ -822,80 +826,39 @@ function startNextStage() {
 }
 
 
-function playWesternTransition(
-  startStage
-) {
-  westernTransition.style.display =
-    "block";
-
-  westernTransition.classList.remove(
-    "go",
-    "open"
-  );
-
-  westernTransitionText.textContent =
-    "READY?";
+function playWesternTransition(startStage) {
+  westernTransition.style.display = "block";
+  westernTransition.classList.remove("go", "open");
+  westernTransitionText.textContent = "READY?";
 
   void westernTransition.offsetWidth;
 
-  stageResultScreen.style.display =
-    "none";
+  stageResultScreen.style.display = "none";
 
-  gameFrame.style.visibility =
-    "visible";
+  /* 次のステージ背景を先に表示 */
+  gameFrame.style.visibility = "visible";
 
+  /* READY?を1秒表示 */
+  setTimeout(() => {
+    westernTransitionText.textContent = "GO!";
+    westernTransition.classList.add("go");
+  }, 1000);
 
-  /* READY?を約1秒表示 */
+  /* GO!を約0.9秒表示してからドアを開く */
+  setTimeout(() => {
+    westernTransition.classList.add("open");
+  }, 1900);
 
-  setTimeout(
-    () => {
-      westernTransitionText.textContent =
-        "GO!";
+  /* ドアが開き終わってからゲーム開始 */
+  setTimeout(() => {
+    startStage();
+  }, 2750);
 
-      westernTransition.classList.add(
-        "go"
-      );
-    },
-    1000
-  );
-
-
-  /* GO!と同時にドアを開く */
-
-  setTimeout(
-    () => {
-      westernTransition.classList.add(
-        "open"
-      );
-    },
-    1150
-  );
-
-
-  /* ドアが開いてからゲーム開始 */
-
-  setTimeout(
-    () => {
-      startStage();
-    },
-    1950
-  );
-
-
-  /* 演出を片づける */
-
-  setTimeout(
-    () => {
-      westernTransition.style.display =
-        "none";
-
-      westernTransition.classList.remove(
-        "go",
-        "open"
-      );
-    },
-    2250
-  );
+  /* 切り替え画面を片付ける */
+  setTimeout(() => {
+    westernTransition.style.display = "none";
+    westernTransition.classList.remove("go", "open");
+  }, 3050);
 }
 
 
