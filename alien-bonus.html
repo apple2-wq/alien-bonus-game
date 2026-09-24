@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>3 STAGE SHOOTING MANIA</title>
+<link rel="preload" as="image" href="./farm-result.png?v=1">
+<link rel="preload" as="image" href="./alien-bonus-result-character-space.png?v=1">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#080319;color:#fff;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif}
@@ -385,6 +387,21 @@ button,input{font:inherit}
   right: 5.5%;
 }
 
+/* 途中結果の321をウエスタン風に固定 */
+.alien-result .stage-countdown,
+.farm-result .stage-countdown{
+  font-family:
+    Copperplate,
+    "Copperplate Gothic Bold",
+    "Rockwell Extra Bold",
+    Rockwell,
+    Georgia,
+    serif !important;
+
+  font-weight:900 !important;
+  letter-spacing:.02em !important;
+}
+
 
 </style>
 </head>
@@ -678,7 +695,25 @@ function prepareLoadedStage(){
   try{
     const frameWindow=gameFrame.contentWindow,frameDocument=gameFrame.contentDocument;
     if(stage.id==="friend"){gameFrame.style.visibility="visible";return}
-    if(stage.id==="alien"){frameDocument.getElementById("restartButton")?.remove();frameWindow.startIntro()}
+    if(stage.id==="alien"){
+
+  frameDocument.getElementById("restartButton")?.remove();
+
+  /* alien-stage6の古い紫色結果画面を完全に非表示 */
+  const hideOldAlienResult =
+    frameDocument.createElement("style");
+
+  hideOldAlienResult.textContent = `
+    #transition{
+      display:none !important;
+      visibility:hidden !important;
+    }
+  `;
+
+  frameDocument.head.appendChild(hideOldAlienResult);
+
+  frameWindow.startIntro();
+}
     if(stage.id==="bonus"){frameDocument.getElementById("readyScreen")?.remove();frameWindow.runOpening()}
     setTimeout(()=>{gameFrame.style.visibility="visible";stageResultScreen.style.display="none"},100);
   }catch(error){console.log("ステージ開始エラー",error);gameFrame.style.visibility="visible";stageResultScreen.style.display="none"}
