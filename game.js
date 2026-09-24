@@ -1918,6 +1918,24 @@ timerText.textContent =
 
 hideGameCountdown();
 
+
+/* =========================
+   統合版へ結果を送る
+   ========================= */
+
+if (window.parent !== window) {
+    window.parent.postMessage(
+        {
+            type: "stageFinished",
+            stage: "friend",
+            score1: leftScore,
+            score2: rightScore
+        },
+        "*"
+    );
+}
+
+
 /* =========================
    上下の幕を閉める
    ========================= */
