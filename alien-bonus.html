@@ -56,6 +56,111 @@ button,input{font:inherit}
   line-height:1;
   text-shadow:0 3px 0 #fff3c7,0 0 8px rgba(255,255,255,.85),0 4px 7px rgba(50,25,8,.38)
 }
+/* =========================
+   牧場ステージ結果画面
+========================= */
+
+.farm-result{
+  display:block;
+  background:#080319;
+}
+
+.farm-result .stage-result-frame{
+  position:absolute;
+  left:50%;
+  top:50%;
+  display:block;
+
+  width:min(100vw,177.78vh);
+  height:min(100vh,56.25vw);
+
+  transform:translate(-50%,-50%);
+  overflow:hidden;
+
+  background:
+    url("./farm-result.png?v=1")
+    center / 100% 100%
+    no-repeat;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    "Hiragino Mincho ProN",
+    serif;
+}
+
+/* 画像にタイトルが入ってるのでHTML側は隠す */
+.farm-result .stage-finish-title,
+.farm-result #nextStageText{
+  display:none;
+}
+
+/* P1/P2の得点 */
+.farm-result .stage-score-row{
+  position:absolute;
+  inset:0;
+  display:block;
+  margin:0;
+}
+
+.farm-result .stage-score{
+  position:absolute;
+  top:42.2%;
+  width:38%;
+  height:17%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  margin:0;
+  font-size:inherit;
+}
+
+.farm-result .stage-score:first-child{
+  left:6%;
+}
+
+.farm-result .stage-score:last-child{
+  right:6%;
+}
+
+.farm-result .score-label{
+  display:none;
+}
+
+/* ジェシーを表示 */
+.farm-result #stageCharacterImage.has-image{
+  display:block;
+}
+
+/* カウントダウンを表示 */
+.farm-result .stage-countdown{
+  position:absolute;
+
+  right:5.5%;
+  top:67.9%;
+
+  z-index:3;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  width:14.5%;
+  height:21.8%;
+
+  color:#5b3216;
+
+  font-size:clamp(44px,8.2vw,132px);
+  font-weight:1000;
+  line-height:1;
+
+  text-shadow:
+    0 3px 0 #fff3c7,
+    0 0 8px rgba(255,255,255,.85),
+    0 4px 7px rgba(50,25,8,.38);
+}
 .alien-result .stage-countdown{position:absolute;right:5.5%;top:67.9%;z-index:3;display:flex;align-items:center;justify-content:center;width:14.5%;height:21.8%;color:#5b3216;font-size:clamp(44px,8.2vw,132px);font-weight:1000;line-height:1;text-shadow:0 3px 0 #fff3c7,0 0 8px rgba(255,255,255,.85),0 4px 7px rgba(50,25,8,.38)}
 .stage-countdown.count-pop{animation:stageCountPop .45s ease-out}
 @keyframes stageCountPop{0%{transform:scale(.55);opacity:.15}65%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}
@@ -449,20 +554,43 @@ async function showFinalResult(){
 }
 function showStageResult(result){
   const stage=STAGES[currentStageIndex];
-  const isAlienStage=stage.id==="alien";
 
-  stageResultScreen.classList.toggle("alien-result",isAlienStage);
+const isFarmStage=
+  stage.id==="friend";
+
+const isAlienStage=
+  stage.id==="alien";
+
+stageResultScreen.classList.toggle(
+  "farm-result",
+  isFarmStage
+);
+
+stageResultScreen.classList.toggle(
+  "alien-result",
+  isAlienStage
+);
   document.getElementById("stageFinishTitle").textContent=`${stage.name} FINISH!`;
   renderStageDigits(document.getElementById("stageScore1"),result.score1);
   renderStageDigits(document.getElementById("stageScore2"),result.score2);
 
   const characterImage="Jessie.png";
-  stageCharacterImage.classList.toggle("has-image",isAlienStage&&Boolean(characterImage));
 
-  if(characterImage){
-    stageCharacterImage.src=characterImage;
-    stageCharacterImage.onerror=()=>stageCharacterImage.classList.remove("has-image");
-  }
+stageCharacterImage.classList.toggle(
+  "has-image",
+  (isFarmStage || isAlienStage)
+  && Boolean(characterImage)
+);
+
+if(characterImage){
+  stageCharacterImage.src=characterImage;
+
+  stageCharacterImage.onerror=()=>{
+    stageCharacterImage.classList.remove(
+      "has-image"
+    );
+  };
+}
 
   const showResultNow=()=>{
     stageResultScreen.style.display=isAlienStage?"block":"flex";
@@ -488,19 +616,25 @@ function showStageResult(result){
     },1000);
   };
 
-  if(isAlienStage){
-    const bg=new Image();
-    bg.src="./alien-bonus-result-character-space.png?v=1";
+  if(isFarmStage || isAlienStage){
 
-    if(bg.complete){
-      showResultNow();
-    }else{
-      bg.onload=showResultNow;
-      bg.onerror=showResultNow;
-    }
-  }else{
+  const bg=new Image();
+
+  bg.src=
+    isFarmStage
+      ? "./farm-result.png?v=1"
+      : "./alien-bonus-result-character-space.png?v=1";
+
+  if(bg.complete){
     showResultNow();
+  }else{
+    bg.onload=showResultNow;
+    bg.onerror=showResultNow;
   }
+
+}else{
+  showResultNow();
+}
 }
 
 function handleStageFinished(rawResult){
@@ -509,11 +643,6 @@ function handleStageFinished(rawResult){
   const result=normalizeResult(rawResult);
   stageResults[currentStageIndex]=result;
 
-  /* 牧場は友達が作ったステージ内の結果画面をそのまま表示する */
-  if(STAGES[currentStageIndex].id==="friend"){
-    setTimeout(startNextStage,6000);
-    return;
-  }
 
   if(currentStageIndex===STAGES.length-1)showFinalResult();
   else showStageResult(result);
