@@ -512,37 +512,35 @@ button,input{font:inherit}
     scale(1.4);
 }
 
-/* 最終結果画面の文字位置調整 */
+/* 最終結果・位置調整（強制適用） */
 
-/* 「トータルスコア」を少し下へ */
 .player-card .label-plate:nth-of-type(2) {
-  top: 22.4%;
+  top: 22.4% !important;
 }
 
-/* 「ヒット率」を数字のすぐ左へ */
 .player-card .label-plate:nth-of-type(4) {
-  left: 20%;
-  top: 43.7%;
-  width: 27%;
-  height: 8.5%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 1.5%;
-  font-size: clamp(12px, 1.45vw, 24px);
-  white-space: nowrap;
+  left: 18% !important;
+  top: 43.5% !important;
+  width: 30% !important;
+  height: 8.5% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  padding-right: 2% !important;
+  font-size: clamp(14px, 1.6vw, 27px) !important;
+  white-space: nowrap !important;
 }
 
-/* ヒット率の数字を少し上へ */
 .accuracy {
-  left: 48%;
-  top: 43.6%;
-  width: 30%;
-  height: 8.5%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  font-size: clamp(22px, 3.2vw, 54px);
+  left: 49% !important;
+  top: 43.4% !important;
+  width: 28% !important;
+  height: 8.5% !important;
+  justify-content: flex-start !important;
+}
+
+.stage-details {
+  top: 50.5% !important;
 }
 
 /* FARM・ALIEN・BONUSの得点も少し上へ */
