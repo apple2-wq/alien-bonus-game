@@ -578,6 +578,26 @@ button,input{font:inherit}
   padding-left: 15% !important;
 }
 
+/* TOP3：得点はそのまま、順位だけ右へ */
+.ranking-list {
+  list-style: none !important;
+  counter-reset: ranking-number;
+}
+
+.ranking-list li {
+  position: relative;
+  counter-increment: ranking-number;
+}
+
+.ranking-list li::before {
+  content: counter(ranking-number) ".";
+  position: absolute;
+  left: 10%;
+  color: #a66a13;
+  font-weight: 1000;
+}
+
+
 </style>
 </head>
 <body>
