@@ -518,34 +518,37 @@ button,input{font:inherit}
   top: 22.4% !important;
 }
 
+/* 「ヒット率」を数字のすぐ左へ */
+
 .player-card .label-plate:nth-of-type(4) {
-  left: 18% !important;
+  left: 20% !important;
   top: 43.5% !important;
-  width: 30% !important;
+  width: 29.5% !important;
   height: 8.5% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: flex-end !important;
-  padding-right: 2% !important;
+  padding: 0 !important;
   font-size: clamp(14px, 1.6vw, 27px) !important;
   white-space: nowrap !important;
 }
 
+/* 数字をヒット率の真横へ */
+
 .accuracy {
-  left: 49% !important;
-  top: 43.4% !important;
-  width: 28% !important;
+  left: 50% !important;
+  top: 43.5% !important;
+  width: 27% !important;
   height: 8.5% !important;
+  display: flex !important;
+  align-items: center !important;
   justify-content: flex-start !important;
 }
 
-.stage-details {
-  top: 50.5% !important;
-}
+/* FARM・ALIEN・BONUSの得点を下げる */
 
-/* FARM・ALIEN・BONUSの得点も少し上へ */
 .stage-details {
-  top: 50.8%;
+  top: 52.8% !important;
 }
 
 </style>
