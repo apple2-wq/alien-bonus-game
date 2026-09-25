@@ -1942,6 +1942,37 @@ gameStarted = false;
 timerText.textContent =
     "Time: 0";
 
+    /* 統合画面へ結果を渡す */
+const scoreText =
+  document.getElementById("score").textContent;
+
+const leftScore =
+  Number(
+    scoreText
+      .match(/LEFT:\s*([\d,]+)/)?.[1]
+      ?.replace(/,/g, "")
+  ) || 0;
+
+const rightScore =
+  Number(
+    scoreText
+      .match(/RIGHT:\s*([\d,]+)/)?.[1]
+      ?.replace(/,/g, "")
+  ) || 0;
+
+window.stageResult = {
+  finished: true,
+  stage: "friend",
+
+  score1: leftScore,
+  score2: rightScore,
+
+  shots1: 0,
+  shots2: 0,
+  hits1: 0,
+  hits2: 0
+};
+
 hideGameCountdown();
 
 /* =========================
