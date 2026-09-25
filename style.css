@@ -148,22 +148,22 @@ h1 {
         -2px 2px 3px black;
 }
 
-/* 🩷 プレイヤー1 */
+/* 左Joy-Con＝ピンク */
 .left-cursor {
-    color: #ff69b4;
+    color: #ff6bba;
+    text-shadow:
+        0 0 4px #ffffff,
+        0 0 8px #ff6bba,
+        0 0 14px #ff6bba;
 }
 
-/* 🩵 プレイヤー2 */
+/* 右Joy-Con＝水色 */
 .right-cursor {
-    color: #55dfff;
-}
-
-.left-cursor {
-    color: blue;
-}
-
-.right-cursor {
-    color: red;
+    color: #55eaff;
+    text-shadow:
+        0 0 4px #ffffff,
+        0 0 8px #55eaff,
+        0 0 14px #55eaff;
 }
 #timer {
     color: white;
