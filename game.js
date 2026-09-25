@@ -1801,7 +1801,7 @@ function updateGamepads() {
         leftCursor.style.top = leftY + "px";
 
 
-        const pressed = !!joyCon0.buttons[13]?.pressed;
+        const pressed = !!joyCon0.buttons[6]?.pressed;
 
         if (pressed && !leftFirePressed) {
             shootAt(leftX, leftY, "left");
@@ -1841,7 +1841,7 @@ function updateGamepads() {
         rightCursor.style.left = rightX + "px";
         rightCursor.style.top = rightY + "px";
 
-        const pressed = !!joyCon1.buttons[3]?.pressed;
+        const pressed = !!joyCon1.buttons[7]?.pressed;
 
         if (pressed && !rightFirePressed) {
             shootAt(rightX, rightY, "right");
