@@ -803,7 +803,7 @@ button,input{font:inherit}
 </style>
 </head>
 <body>
-<iframe id="gameFrame" src="index.html" title="3ステージシューティングゲーム"></iframe>
+<iframe id="gameFrame" src="friend-new-stage/index.html" title="3ステージシューティングゲーム"></iframe>
 
 <div id="westernTransition" aria-hidden="true">
   <div class="western-door left"></div>
@@ -901,7 +901,7 @@ button,input{font:inherit}
 
 <script>
 const STAGES=[
-  {id:"friend",name:"FARM STAGE",src:"index.html"},
+  {id:"friend",name:"FARM STAGE",src: "friend-new-stage/index.html"},
   {id:"alien",name:"ALIEN STAGE",src:"alien-stage6.html"},
   {id:"bonus",name:"BONUS STAGE",src:"bonus-stage4.html"}
 ];
@@ -1325,6 +1325,67 @@ function showStageRules(
 
 }
 
+
+  gameFrame.style.visibility =
+    "hidden";
+
+  stageRuleScreen.style.display =
+    "flex";
+
+  stageRuleScreen.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
+
+  stageRuleCountdown.textContent =
+    `スタートまで ${seconds}秒`;
+
+
+  stageRuleTimer =
+    setInterval(
+      () => {
+
+        seconds--;
+
+
+        if (seconds > 0) {
+
+          stageRuleCountdown.textContent =
+            `スタートまで ${seconds}秒`;
+
+          return;
+
+        }
+
+
+        clearInterval(
+          stageRuleTimer
+        );
+
+        stageRuleTimer = null;
+
+
+        stageRuleScreen.style.display =
+          "none";
+
+        stageRuleScreen.setAttribute(
+          "aria-hidden",
+          "true"
+        );
+
+
+        playWesternTransition(
+          startStage
+        );
+
+      },
+
+      1000
+    );
+
+
+
 function playWesternTransition(startStage) {
   westernTransition.style.display = "block";
   westernTransition.classList.remove("go", "open");
@@ -1381,14 +1442,6 @@ function prepareLoadedStage() {
     if (
       stage.id === "friend"
     ) {
-
-      stageRuleScreen.style.display =
-        "none";
-
-      stageRuleScreen.setAttribute(
-        "aria-hidden",
-        "true"
-      );
 
       gameFrame.style.visibility =
         "visible";
@@ -1517,6 +1570,13 @@ function prepareLoadedStage() {
   }
 
 }
+
+    gameFrame.style.visibility =
+      "visible";
+
+    stageResultScreen.style.display =
+      "none";
+      
 
 gameFrame.addEventListener("load",()=>setTimeout(prepareLoadedStage,100));
 setInterval(()=>{
