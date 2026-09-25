@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Shooting Game</title>
+    <link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div id="game">
+
+        <!-- 新しい的 -->
+        <div id="rabbit-targets"></div>
+        <div id="cat-targets"></div>
+        <div id="goat-targets"></div>
+        <div id="rexer-targets"></div>
+        <div id="sparrow-targets"></div>
+     
+
+        <!-- =========================
+             スタート画面
+        ========================= -->
+
+        <div id="start-screen">
+            <button id="start-button">START</button>
+        </div>
+
+        <!-- =========================
+             5秒間の試し撃ち
+        ========================= -->
+
+        <div id="practice-targets">
+            <div id="practice-text">的をねらって！</div>
+        </div>
+<!-- =========================
+     ステージ1説明画面
+========================= -->
+<div id="stage1-intro">
+
+    <div class="stage1-title">
+        STAGE 1
+    </div>
+
+    <div class="gakki-message">
+        ガッキーは高得点！
+    </div>
+
+    <img src="gakki.png" id="gakki-intro-image">
+
+</div>
+
+        <!-- =========================
+             カウントダウン
+        ========================= -->
+
+        <div id="countdown">
+            3
+        </div>
+
+        <!-- =========================
+             幕
+        ========================= -->
+
+        <div id="curtain-top"></div>
+        <div id="curtain-bottom"></div>
+
+        <!-- =========================
+             最終結果の幕
+        ========================= -->
+
+        <!-- =========================
+             背景レイヤー
+             奥 → 手前
+        ========================= -->
+
+        <img src="背景.png"
+             class="board sky-background">
+
+        <img src="山.png"
+             class="board mountain">
+
+        <img src="土.png"
+             class="board soil">
+
+        <!-- 青い的 -->
+        <div id="blue-targets"></div>
+
+        <img src="畑土.png"
+             class="board field-soil">
+
+        <img src="畑土2.png"
+             class="board field-soil2">
+
+        <img src="家.png"
+             class="board house">
+        <div id="gakki-targets"></div>
+        <!-- 紫の的 -->
+        <div id="purple-targets"></div>
+
+        <img src="草.png"
+             class="board grass">
+
+        <!-- 赤い的 -->
+        <div id="red-targets"></div>
+
+        <img src="土真ん中.png"
+             class="board soil-middle">
+
+        <img src="木.png"
+             class="board tree">
+
+        <!-- ことり -->
+        <div id="bird-targets"></div>
+
+        <!-- 黄色の的 -->
+        <div id="yellow-targets"></div>
+
+        <img src="水.png"
+             class="board water">
+
+        <!-- 緑の的 -->
+        <div id="green-targets"></div>
+
+        <img src="水2.png"
+             class="board water2">
+
+        <img src="草手前.png"
+             class="board grass-front">
+
+        <img src="土手前.png"
+             class="board soil-front">
+
+        <img src="草最前.png"
+             class="board grass-front-most">
+
+        <!-- アライグマ -->
+        <div id="orange-targets"></div>
+
+        <img src="土最前.png"
+             class="board soil-front-most">
+
+        <!-- ニワトリ -->
+        <div id="chicken-targets"></div>
+
+        <img src="柵.png"
+             class="board fence">
+
+        <!-- ゲームの枠 -->
+        <img src="まわり.png"
+             class="board game-frame">
+
+        <!-- 照準 -->
+        <div id="crosshair">＋</div>
+
+    </div>
+
+    <script src="game.js"></script>
+
+</body>
+</html>
