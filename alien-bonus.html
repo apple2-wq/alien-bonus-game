@@ -597,6 +597,128 @@ button,input{font:inherit}
   font-weight: 1000;
 }
 
+/* =====================================
+   ステージルール説明
+===================================== */
+
+#stageRuleScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 14500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 4%;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(112, 65, 29, 0.96),
+      rgba(28, 13, 5, 0.99)
+    );
+  color: #3b2314;
+  text-align: center;
+}
+
+.stage-rule-card {
+  position: relative;
+  width: min(820px, 88vw);
+  padding: clamp(20px, 3vw, 42px);
+  border: clamp(5px, 0.7vw, 10px) solid #a66b2b;
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      180deg,
+      #fff2cd,
+      #e8cb91
+    );
+  box-shadow:
+    0 0 0 5px #351b0c,
+    0 15px 35px rgba(0, 0, 0, 0.65),
+    inset 0 0 24px rgba(91, 49, 17, 0.25);
+}
+
+.stage-rule-card::before,
+.stage-rule-card::after {
+  content: "★";
+  position: absolute;
+  top: 16px;
+  color: #b67920;
+  font-size: clamp(22px, 3vw, 42px);
+  text-shadow: 0 2px 0 #523016;
+}
+
+.stage-rule-card::before {
+  left: 20px;
+}
+
+.stage-rule-card::after {
+  right: 20px;
+}
+
+#stageRuleTitle {
+  margin: 0 0 18px;
+  color: #fff0c1;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(32px, 5vw, 70px);
+  font-weight: 1000;
+  letter-spacing: 0.04em;
+  text-shadow:
+    0 4px 0 #44200e,
+    0 0 5px #000;
+}
+
+#stageRulePoints {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 14px;
+  margin: 0 auto 20px;
+  font-size: clamp(14px, 2vw, 27px);
+  font-weight: 900;
+}
+
+.rule-point {
+  padding: 8px 5px;
+  border-bottom: 2px solid rgba(92, 52, 22, 0.28);
+}
+
+.rule-players {
+  display: flex;
+  justify-content: center;
+  gap: clamp(20px, 6vw, 80px);
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 3px solid rgba(92, 52, 22, 0.35);
+  font-size: clamp(16px, 2.4vw, 32px);
+  font-weight: 1000;
+}
+
+.rule-player-water {
+  color: #078fb8;
+  text-shadow: 0 1px 0 #fff;
+}
+
+.rule-player-pink {
+  color: #c5296c;
+  text-shadow: 0 1px 0 #fff;
+}
+
+#stageRuleCountdown {
+  margin-top: 16px;
+  color: #714115;
+  font-size: clamp(13px, 1.7vw, 23px);
+  font-weight: 900;
+}
+
+@media (max-width: 700px) {
+  #stageRulePoints {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .rule-players {
+    gap: 15px;
+  }
+}
+
 
 </style>
 </head>
@@ -607,6 +729,33 @@ button,input{font:inherit}
   <div class="western-door left"></div>
   <div class="western-door right"></div>
   <div id="westernTransitionText">READY?</div>
+</div>
+
+<!-- ステージ開始前のルール説明 -->
+<div id="stageRuleScreen" aria-hidden="true">
+  <div class="stage-rule-card">
+
+    <h2 id="stageRuleTitle">
+      STAGE RULES
+    </h2>
+
+    <div id="stageRulePoints"></div>
+
+    <div class="rule-players">
+      <div class="rule-player-water">
+        右：水色・ZR
+      </div>
+
+      <div class="rule-player-pink">
+        左：ピンク・ZL
+      </div>
+    </div>
+
+    <div id="stageRuleCountdown">
+      まもなくスタート
+    </div>
+
+  </div>
 </div>
 
 <div id="stageResultScreen" class="overlay">
@@ -910,6 +1059,138 @@ function startNextStage() {
     STAGES[currentStageIndex].src;
 }
 
+/* =====================================
+   ルール説明画面
+===================================== */
+
+const stageRuleScreen =
+  document.getElementById(
+    "stageRuleScreen"
+  );
+
+const stageRuleTitle =
+  document.getElementById(
+    "stageRuleTitle"
+  );
+
+const stageRulePoints =
+  document.getElementById(
+    "stageRulePoints"
+  );
+
+const stageRuleCountdown =
+  document.getElementById(
+    "stageRuleCountdown"
+  );
+
+let stageRuleTimer = null;
+
+
+function showStageRules(
+  stageId,
+  startStage
+) {
+
+  if (stageRuleTimer) {
+    clearInterval(stageRuleTimer);
+    stageRuleTimer = null;
+  }
+
+
+  let seconds;
+
+
+  if (stageId === "alien") {
+
+    seconds = 8;
+
+    stageRuleTitle.textContent =
+      "ALIEN STAGE";
+
+    stageRulePoints.innerHTML = `
+      <div class="rule-point">緑：500点</div>
+      <div class="rule-point">青：1,000点</div>
+      <div class="rule-point">紫：2,000点</div>
+      <div class="rule-point">王冠：5,000点</div>
+      <div class="rule-point">スペシャル：10,000点</div>
+      <div class="rule-point">敵：−1,000点</div>
+    `;
+
+  } else {
+
+    seconds = 6;
+
+    stageRuleTitle.textContent =
+      "BONUS STAGE";
+
+    stageRulePoints.innerHTML = `
+      <div class="rule-point">丸い的：500点</div>
+      <div class="rule-point">レアな的：1,000点</div>
+      <div class="rule-point">制限時間：15秒</div>
+    `;
+
+  }
+
+
+  gameFrame.style.visibility =
+    "hidden";
+
+  stageRuleScreen.style.display =
+    "flex";
+
+  stageRuleScreen.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
+
+  stageRuleCountdown.textContent =
+    `スタートまで ${seconds}秒`;
+
+
+  stageRuleTimer =
+    setInterval(
+      () => {
+
+        seconds--;
+
+
+        if (seconds > 0) {
+
+          stageRuleCountdown.textContent =
+            `スタートまで ${seconds}秒`;
+
+          return;
+
+        }
+
+
+        clearInterval(
+          stageRuleTimer
+        );
+
+        stageRuleTimer = null;
+
+
+        stageRuleScreen.style.display =
+          "none";
+
+        stageRuleScreen.setAttribute(
+          "aria-hidden",
+          "true"
+        );
+
+
+        playWesternTransition(
+          startStage
+        );
+
+      },
+
+      1000
+    );
+
+}
 
 function playWesternTransition(startStage) {
   westernTransition.style.display = "block";
@@ -948,10 +1229,13 @@ function playWesternTransition(startStage) {
 
 
 function prepareLoadedStage() {
+
   const stage =
     STAGES[currentStageIndex];
 
+
   try {
+
     const frameWindow =
       gameFrame.contentWindow;
 
@@ -959,15 +1243,17 @@ function prepareLoadedStage() {
       gameFrame.contentDocument;
 
 
-    /* 最初の牧場ステージ */
+    /* 友達ステージ */
 
     if (
       stage.id === "friend"
     ) {
+
       gameFrame.style.visibility =
         "visible";
 
       return;
+
     }
 
 
@@ -976,6 +1262,7 @@ function prepareLoadedStage() {
     if (
       stage.id === "alien"
     ) {
+
       frameDocument
         .getElementById(
           "restartButton"
@@ -1015,11 +1302,14 @@ function prepareLoadedStage() {
       }
 
 
-      playWesternTransition(
-        () => {
-          frameWindow.beginActualGame();
-        }
+      showStageRules(
+        "alien",
+        () =>
+          frameWindow.beginActualGame()
       );
+
+      return;
+
     }
 
 
@@ -1028,6 +1318,7 @@ function prepareLoadedStage() {
     if (
       stage.id === "bonus"
     ) {
+
       const readyScreen =
         frameDocument.getElementById(
           "readyScreen"
@@ -1060,27 +1351,38 @@ function prepareLoadedStage() {
       }
 
 
-      playWesternTransition(
-        () => {
-          frameWindow.startActualGame();
-        }
+      showStageRules(
+        "bonus",
+        () =>
+          frameWindow.startActualGame()
       );
-    }
-  }
 
-  catch (error) {
+    }
+
+  } catch (error) {
+
     console.log(
       "ステージ開始エラー",
       error
     );
+
 
     gameFrame.style.visibility =
       "visible";
 
     stageResultScreen.style.display =
       "none";
+
   }
+
 }
+
+    gameFrame.style.visibility =
+      "visible";
+
+    stageResultScreen.style.display =
+      "none";
+      
 
 gameFrame.addEventListener("load",()=>setTimeout(prepareLoadedStage,100));
 setInterval(()=>{
