@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>3 STAGE SHOOTING MANIA</title>
+<link rel="preload" as="image" href="./farm-result.png?v=1">
+<link rel="preload" as="image" href="./alien-bonus-result-character-space.png?v=1">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#080319;color:#fff;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif}
+button,input{font:inherit}
+#gameFrame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#080319}
+.overlay{position:fixed;inset:0;z-index:10000;display:none}
+#stageResultScreen{flex-direction:column;justify-content:center;align-items:center;text-align:center;background:radial-gradient(circle at 50% 40%,rgba(110,46,184,.97),rgba(7,2,35,.99))}
+.stage-result-frame{display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;height:100%}
+.alien-result{display:block;background:#080319}
+.alien-result .stage-result-frame{position:absolute;left:50%;top:50%;display:block;width:min(100vw,177.78vh);height:min(100vh,56.25vw);transform:translate(-50%,-50%);overflow:hidden;background:url("./alien-bonus-result-character-space.png?v=1") center/100% 100% no-repeat;font-family:Georgia,"Times New Roman","Hiragino Mincho ProN",serif}
+.alien-result .stage-finish-title,.alien-result #nextStageText{display:none}
+.alien-result .stage-score-row{position:absolute;inset:0;display:block;margin:0}
+.alien-result .stage-score{position:absolute;top:42.2%;width:38%;height:17%;display:flex;align-items:center;justify-content:center;margin:0;font-size:inherit}
+.alien-result .stage-score:first-child{left:6%}.alien-result .stage-score:last-child{right:6%}
+.alien-result .score-label{display:none}
+.stage-result-digits{display:flex;align-items:center;justify-content:center;width:100%;height:100%;gap:1.2%}
+.stage-result-digit{display:grid;place-items:center;width:14.2%;height:76%;border:clamp(1px,.22vw,4px) solid #a79578;border-radius:clamp(3px,.5vw,9px);background:linear-gradient(#fffdf3,#e9ddc4);box-shadow:inset 0 0 .7vw rgba(67,42,20,.17),0 .35vw 0 #a89472;font-size:clamp(22px,4.1vw,68px);font-weight:1000;line-height:1;text-shadow:0 2px 0 #fff,0 3px 5px rgba(40,20,10,.24)}
+.alien-result .p1-color .stage-result-digit{color:#087e9c}.alien-result .p2-color .stage-result-digit{color:#ba245e}
+#stageCharacterImage{
+  display:none;
+  position:absolute;
+  left:4.3%;
+  top:67.7%;
+  z-index:5;
+  width:18%;
+  height:27%;
+  object-fit:contain;
+  object-position:center bottom;
+  border-radius:50%;
+  clip-path:circle(47% at 50% 50%);
+  filter:drop-shadow(0 .35vw .25vw rgba(43,22,10,.45));
+}
+
+.alien-result .stage-countdown,
+.farm-result .stage-countdown{
+  font-family:
+    Georgia,
+    "Times New Roman",
+    "Yu Mincho",
+    "Hiragino Mincho ProN",
+    serif;
+}
+
+.farm-result .p1-color .stage-result-digit{
+  color:#087e9c;
+}
+
+.farm-result .p2-color .stage-result-digit{
+  color:#ba245e;
+}
+
+
+.alien-result #stageCharacterImage.has-image{
+  display:block;
+}
+.alien-result .stage-countdown{
+  position:absolute;
+  right:5.5%;
+  top:67.9%;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:15.2%;
+  height:23.5%;
+  color:#5b3216;
+  font-size:clamp(44px,8.2vw,132px);
+  font-weight:1000;
+  line-height:1;
+  text-shadow:0 3px 0 #fff3c7,0 0 8px rgba(255,255,255,.85),0 4px 7px rgba(50,25,8,.38)
+}
+/* =========================
+   牧場ステージ結果画面
+========================= */
+
+.farm-result{
+  display:block;
+  background:#080319;
+}
+
+.farm-result .stage-result-frame{
+  position:absolute;
+  left:50%;
+  top:50%;
+  display:block;
+
+  width:min(100vw,177.78vh);
+  height:min(100vh,56.25vw);
+
+  transform:translate(-50%,-50%);
+  overflow:hidden;
+
+  background:
+    url("./farm-result.png?v=1")
+    center / 100% 100%
+    no-repeat;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    "Hiragino Mincho ProN",
+    serif;
+}
+
+/* 画像にタイトルが入ってるのでHTML側は隠す */
+.farm-result .stage-finish-title,
+.farm-result #nextStageText{
+  display:none;
+}
+
+/* P1/P2の得点 */
+.farm-result .stage-score-row{
+  position:absolute;
+  inset:0;
+  display:block;
+  margin:0;
+}
+
+.farm-result .stage-score{
+  position:absolute;
+  top:42.2%;
+  width:38%;
+  height:17%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  margin:0;
+  font-size:inherit;
+}
+
+.farm-result .stage-score:first-child{
+  left:6%;
+}
+
+.farm-result .stage-score:last-child{
+  right:6%;
+}
+
+.farm-result .score-label{
+  display:none;
+}
+
+/* ジェシーを表示 */
+.farm-result #stageCharacterImage.has-image{
+  display:block;
+}
+
+/* カウントダウンを表示 */
+.farm-result .stage-countdown{
+  position:absolute;
+
+  right:5.5%;
+  top:67.9%;
+
+  z-index:3;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  width:14.5%;
+  height:21.8%;
+
+  color:#5b3216;
+
+  font-size:clamp(44px,8.2vw,132px);
+  font-weight:1000;
+  line-height:1;
+
+  text-shadow:
+    0 3px 0 #fff3c7,
+    0 0 8px rgba(255,255,255,.85),
+    0 4px 7px rgba(50,25,8,.38);
+}
+.alien-result .stage-countdown{position:absolute;right:5.5%;top:67.9%;z-index:3;display:flex;align-items:center;justify-content:center;width:14.5%;height:21.8%;color:#5b3216;font-size:clamp(44px,8.2vw,132px);font-weight:1000;line-height:1;text-shadow:0 3px 0 #fff3c7,0 0 8px rgba(255,255,255,.85),0 4px 7px rgba(50,25,8,.38)}
+.stage-countdown.count-pop{animation:stageCountPop .45s ease-out}
+@keyframes stageCountPop{0%{transform:scale(.55);opacity:.15}65%{transform:scale(1.15);opacity:1}100%{transform:scale(1)}}
+.stage-finish-title{color:#ffe457;font-size:clamp(38px,7vw,92px);font-weight:1000;letter-spacing:.04em;text-shadow:5px 5px 0 #5a1c92,0 0 24px #ff9c25}
+.stage-score-row{display:flex;gap:clamp(24px,8vw,130px);margin:26px 0 18px}.stage-score{font-size:clamp(24px,4vw,54px);font-weight:1000}.p1-color{color:#55eaff}.p2-color{color:#ff6bba}
+#nextStageText{font-size:clamp(18px,2.6vw,34px);font-weight:900}#nextSeconds{color:#ffe457;font-size:1.35em}
+#finalResultScreen{overflow:hidden;background:#130d09}
+.result-frame{position:absolute;left:50%;top:50%;width:min(100vw,177.78vh);height:min(100vh,56.25vw);transform:translate(-50%,-50%);overflow:hidden;background-image:url("./result-screen-western-v2-light.webp?v=3");background-position:center;background-size:100% 100%;background-repeat:no-repeat;color:#392413;font-family:Georgia,"Times New Roman","Hiragino Mincho ProN",serif;text-shadow:0 1px 0 rgba(255,255,255,.55)}
+.result-frame,
+.result-frame *{
+  font-family:
+    Georgia,
+    "Times New Roman",
+    "Yu Mincho",
+    "Hiragino Mincho ProN",
+    serif !important;
+}
+
+.digit,
+.accuracy,
+.pair-record strong{
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif !important;
+}
+
+
+.final-title{display:none}
+.player-grid{position:absolute;inset:0}
+.player-card{position:absolute;top:0;width:50%;height:100%;text-align:center}.p1-card{left:0}.p2-card{right:0}
+.player-name{position:absolute;top:11.2%;left:17%;width:66%;height:6.8%;display:flex;align-items:center;justify-content:center;margin:0;color:#fff6d8;font-size:clamp(15px,2.2vw,38px);font-weight:1000;letter-spacing:.04em;text-shadow:0 3px 0 #332014,0 0 5px rgba(0,0,0,.7)}
+.label-plate{position:absolute;left:18%;width:64%;margin:0;padding:0;border:0;background:none;box-shadow:none;color:#52351f;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:clamp(9px,1.25vw,21px);font-weight:1000;letter-spacing:.03em;text-shadow:none}.player-card .label-plate:nth-of-type(2){top:21.2%}.player-card .label-plate:nth-of-type(4){top:43.5%}
+.score-digits{position:absolute;left:14%;top:24.2%;width:72%;height:16.2%;display:flex;align-items:center;justify-content:center;gap:.65%;margin:0}.digit{display:grid;place-items:center;width:14.8%;height:76%;border:clamp(1px,.25vw,4px) solid #a79578;border-radius:clamp(2px,.5vw,8px);background:linear-gradient(#fffdf3,#e9ddc4);box-shadow:inset 0 0 .7vw rgba(67,42,20,.17),0 .35vw 0 #a89472;font-family:Georgia,serif;font-size:clamp(20px,4vw,65px);font-weight:1000;line-height:1}.p1-card .digit{color:#087e9c}.p2-card .digit{color:#ba245e}
+.accuracy{position:absolute;left:14%;top:44.8%;width:72%;height:8.5%;display:flex;align-items:center;justify-content:center;color:#422b1d;font-size:clamp(19px,3.2vw,54px);font-weight:1000;text-shadow:0 2px 0 #fff}.stage-details{position:absolute;left:14%;top:52.3%;width:72%;color:#513721;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:clamp(7px,.72vw,12px);font-weight:900;line-height:1.15;text-shadow:none}
+.rank-grid{position:absolute;inset:0}.rank-card{position:absolute;top:59.8%;height:25.3%;padding:0 2% 1%;border:0;background:none;color:#4a301c}.rank-card:nth-child(1){left:3.3%;width:30%}.rank-card:nth-child(2){left:35.2%;width:29.6%}.rank-card:nth-child(3){left:66.4%;width:30.2%}.rank-card h3{position:absolute;left:5%;top:4.5%;width:90%;height:10%;display:flex;align-items:center;justify-content:center;margin:0;color:#fff0d0;font-size:clamp(9px,1.18vw,20px);font-weight:1000;line-height:1;text-align:center;text-shadow:0 2px 0 #3b2518}
+.ranking-list{
+  position:absolute;
+  left:11%;
+  top:24%;
+  width:78%;
+  margin:0;
+  padding-left:13%;
+  font-size:clamp(9px,1.05vw,18px);
+  font-weight:1000;
+  line-height:2.05;
+}.rank-line{display:block;text-align:right}.rank-line span:last-child{font-size:1.05em}
+.pair-box{position:absolute;left:4%;top:19%;width:92%;height:62%;display:grid;grid-template-columns:1fr 1fr;gap:3%}.pair-record{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 2%;border-radius:0;background:none;text-align:center}.pair-record small{display:block;color:#6d4b2d;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:clamp(7px,.85vw,14px);font-weight:900}.pair-record strong{display:block;margin:3% 0;color:#9b5a09;font-size:clamp(12px,1.65vw,28px);white-space:nowrap}.pair-record span{max-width:100%;overflow:hidden;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:clamp(7px,.8vw,13px);font-weight:900;white-space:nowrap;text-overflow:ellipsis}
+.button-row{position:absolute;left:31.5%;top:86.5%;width:37%;height:9%;display:flex;align-items:center;justify-content:center;margin:0}.main-button,.staff-button,.modal-button{cursor:pointer}.main-button{width:100%;height:100%;padding:0;border:0;background:transparent;color:#fff5d2;font-family:Georgia,"Times New Roman",serif;font-size:clamp(14px,2vw,34px);font-weight:1000;letter-spacing:.08em;text-shadow:0 3px 0 #361b0e,0 0 5px #000}.main-button small{display:block;margin-top:-1%;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:.42em;letter-spacing:.08em}.staff-button{position:fixed;right:1.6%;bottom:1.8%;padding:.35em .7em;border:1px solid rgba(255,255,255,.65);border-radius:6px;background:rgba(25,15,10,.74);color:#fff;font-family:Arial,"Hiragino Kaku Gothic ProN",sans-serif;font-size:clamp(7px,.7vw,11px);font-weight:800}
+#nameModal{
+  z-index:20000;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  background:rgba(20,10,4,.78);
+}
+
+.modal-card{
+  width:min(540px,92vw);
+  padding:26px 30px;
+  border:8px ridge #8b572a;
+  border-radius:12px;
+  background:
+    linear-gradient(rgba(255,244,214,.96),rgba(222,188,135,.96)),
+    #d5b074;
+  box-shadow:
+    0 0 0 4px #3d2412,
+    0 10px 30px rgba(0,0,0,.65),
+    inset 0 0 22px rgba(92,47,14,.35);
+  color:#4a2b14;
+  text-align:center;
+  font-family:Georgia,"Times New Roman","Yu Mincho","Hiragino Mincho ProN",serif;
+}
+
+#nameModalTitle{
+  margin:0 0 10px;
+  color:#6d3512;
+  font-size:clamp(26px,4vw,42px);
+  font-weight:1000;
+  letter-spacing:.04em;
+  text-shadow:0 2px 0 #f7dfad;
+}
+
+.name-note{
+  margin:0 0 16px;
+  color:#5a3921;
+  font-size:15px;
+  font-weight:800;
+}
+
+#nameInput{
+  width:100%;
+  padding:12px 14px;
+  border:4px solid #8b572a;
+  border-radius:5px;
+  background:#fff8df;
+  color:#3e2617;
+  font-size:24px;
+  font-family:Georgia,"Yu Mincho","Hiragino Mincho ProN",serif;
+  text-align:center;
+  box-shadow:inset 0 2px 7px rgba(82,45,20,.25);
+}
+
+.modal-button{
+  margin-top:16px;
+  padding:10px 28px;
+  border:4px solid #5a3217;
+  border-radius:6px;
+  background:linear-gradient(#a9652f,#6d3718);
+  color:#fff2c7;
+  font-size:20px;
+  font-weight:1000;
+  font-family:Georgia,"Times New Roman",serif;
+  text-shadow:0 2px 0 #2d170b;
+  box-shadow:0 5px 0 #3b1f0f;
+}
+
+
+/* ハート削除後も文字色は水色・ピンクを維持 */
+.p1-card .player-name{color:#fff6d8 !important;}
+.p2-card .player-name{color:#fff6d8 !important;}
+
+/* ラベルは日本語だけ・洋風 */
+.label-plate{
+  color:#52351f !important;
+  letter-spacing:.05em !important;
+}
+
+/* NEXT PLAYERS は英語のまま残す */
+.main-button{
+  font-family:Georgia,"Times New Roman","Yu Mincho","Hiragino Mincho ProN",serif !important;
+}
+
+
+/* 最終結果画面の位置調整 */
+.player-name {
+  top: 11.2%;
+  left: 17%;
+  width: 66%;
+  height: 6.8%;
+}
+
+.player-card .label-plate:nth-of-type(2) {
+  top: 21.2%;
+}
+
+/* 「ヒット率」を少し左へ */
+.label-plate:nth-of-type(4) {
+  left: 19% !important;
+  top: 43.5% !important;
+  width: 28.5% !important;
+  height: 8.5% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  padding: 0 !important;
+  font-size: clamp(14px, 1.6vw, 27px) !important;
+  white-space: nowrap !important;
+}
+
+/* 数字との間を少し広げる */
+.accuracy {
+  left: 50.5% !important;
+  top: 43.5% !important;
+  width: 27% !important;
+  height: 8.5% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+/* ステージ別得点を元の位置・大きさへ戻す */
+.stage-details {
+  top: 52.3% !important;
+  font-size: clamp(7px, 0.72vw, 12px) !important;
+}
+
+.rank-card:nth-child(1) .ranking-list,
+.rank-card:nth-child(2) .ranking-list{
+  top:31.5% !important;
+  line-height:2.0 !important;
+}
+
+.rank-card:nth-child(1) .ranking-list{
+  left:1% !important;
+  width:88% !important;
+  padding-left:10% !important;
+}
+
+.rank-card:nth-child(1) .rank-line{
+  justify-content:center !important;
+  padding-left:0%;
+}
+
+.ranking-list li{
+  position:relative;
+  min-height:1.9em;
+}
+
+.rank-line{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  min-height:1.9em;
+}
+
+.rank-card:nth-child(3) .pair-box{
+  top:21% !important;
+}
+
+
+/* Jessieを大きくして少し右へ */
+#stageCharacterImage {
+  left: 4.3%;
+  top: 67.7%;
+  width: 17.5%;
+  height: 25.5%;
+}
+
+/* カウントダウンを少し左へ */
+.alien-result .stage-countdown {
+  right: 5.5%;
+}
+
+/* 次ステージへ移るときのウエスタンドア */
+#westernTransition {
+  position: fixed;
+  inset: 0;
+  z-index: 15000;
+  display: none;
+  overflow: hidden;
+  pointer-events: none;
+  background: #160c06;
+}
+
+#westernTransition.open {
+  background: transparent;
+}
+
+.western-door {
+  position: absolute;
+  top: 0;
+  width: 50.5%;
+  height: 100%;
+
+  transition:
+    transform .85s cubic-bezier(.72, 0, .28, 1);
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #3a1d0d 0 9%,
+      #6f3b19 9% 18%,
+      #4b260f 18% 27%
+    );
+
+  box-shadow:
+    inset 0 0 0 clamp(6px, 1vw, 18px) #241006,
+    inset 0 0 0 clamp(10px, 1.5vw, 26px) #b3772c,
+    inset 0 0 40px #000;
+}
+
+.western-door::before {
+  content: "";
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 10%;
+  bottom: 10%;
+
+  border:
+    clamp(5px, .8vw, 14px)
+    solid #c28a3d;
+
+  box-shadow:
+    0 0 0 clamp(3px, .35vw, 7px) #2a1208,
+    inset 0 0 28px rgba(0, 0, 0, .55);
+}
+
+.western-door.left {
+  left: 0;
+  border-right:
+    clamp(4px, .6vw, 10px)
+    solid #d49a42;
+}
+
+.western-door.right {
+  right: 0;
+  border-left:
+    clamp(4px, .6vw, 10px)
+    solid #d49a42;
+}
+
+#westernTransition.open .western-door.left {
+  transform: translateX(-103%);
+}
+
+#westernTransition.open .western-door.right {
+  transform: translateX(103%);
+}
+
+#westernTransitionText {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+
+  transform: translate(-50%, -50%);
+
+  color: #fff1c4;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(54px, 10vw, 160px);
+
+  font-weight: 1000;
+  letter-spacing: .04em;
+  white-space: nowrap;
+
+  text-shadow:
+    0 .06em 0 #53230c,
+    0 0 .18em #ffbd43,
+    0 .09em .1em #000;
+
+  transition:
+    opacity .28s,
+    transform .28s;
+}
+
+#westernTransition.go #westernTransitionText {
+  color: #ffe052;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1.15);
+}
+
+#westernTransition.open #westernTransitionText {
+  opacity: 0;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1.4);
+}
+
+/* 最終結果・位置調整（強制適用） */
+
+.player-card .label-plate:nth-of-type(2) {
+  top: 22.4% !important;
+}
+
+/* 「ヒット率」を数字のすぐ左へ */
+
+.player-card .label-plate:nth-of-type(4) {
+  left: 20% !important;
+  top: 43.5% !important;
+  width: 29.5% !important;
+  height: 8.5% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  padding: 0 !important;
+  font-size: clamp(14px, 1.6vw, 27px) !important;
+  white-space: nowrap !important;
+}
+
+/* 数字をヒット率の真横へ */
+
+.accuracy {
+  left: 50% !important;
+  top: 43.5% !important;
+  width: 27% !important;
+  height: 8.5% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+/* FARM・ALIEN・BONUSの得点を下げる */
+
+.stage-details {
+  top: 52.8% !important;
+}
+
+/* TOP3を上に戻して少し右へ */
+.ranking-list {
+  left: 13% !important;
+  top: 20% !important;
+  width: 76% !important;
+  padding-left: 15% !important;
+}
+
+/* TOP3：得点はそのまま、順位だけ右へ */
+.ranking-list {
+  list-style: none !important;
+  counter-reset: ranking-number;
+}
+
+.ranking-list li {
+  position: relative;
+  counter-increment: ranking-number;
+}
+
+.ranking-list li::before {
+  content: counter(ranking-number) ".";
+  position: absolute;
+  left: 10%;
+  color: #a66a13;
+  font-weight: 1000;
+}
+
+/* =====================================
+   ステージルール説明
+===================================== */
+
+#stageRuleScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 14500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 4%;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(112, 65, 29, 0.96),
+      rgba(28, 13, 5, 0.99)
+    );
+  color: #3b2314;
+  text-align: center;
+}
+
+.stage-rule-card {
+  position: relative;
+  width: min(820px, 88vw);
+  padding: clamp(20px, 3vw, 42px);
+  border: clamp(5px, 0.7vw, 10px) solid #a66b2b;
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      180deg,
+      #fff2cd,
+      #e8cb91
+    );
+  box-shadow:
+    0 0 0 5px #351b0c,
+    0 15px 35px rgba(0, 0, 0, 0.65),
+    inset 0 0 24px rgba(91, 49, 17, 0.25);
+}
+
+.stage-rule-card::before,
+.stage-rule-card::after {
+  content: "★";
+  position: absolute;
+  top: 16px;
+  color: #b67920;
+  font-size: clamp(22px, 3vw, 42px);
+  text-shadow: 0 2px 0 #523016;
+}
+
+.stage-rule-card::before {
+  left: 20px;
+}
+
+.stage-rule-card::after {
+  right: 20px;
+}
+
+#stageRuleTitle {
+  margin: 0 0 18px;
+  color: #fff0c1;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(32px, 5vw, 70px);
+  font-weight: 1000;
+  letter-spacing: 0.04em;
+  text-shadow:
+    0 4px 0 #44200e,
+    0 0 5px #000;
+}
+
+#stageRulePoints {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 14px;
+  margin: 0 auto 20px;
+  font-size: clamp(14px, 2vw, 27px);
+  font-weight: 900;
+}
+
+.rule-point {
+  padding: 8px 5px;
+  border-bottom: 2px solid rgba(92, 52, 22, 0.28);
+}
+
+.rule-players {
+  display: flex;
+  justify-content: center;
+  gap: clamp(20px, 6vw, 80px);
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 3px solid rgba(92, 52, 22, 0.35);
+  font-size: clamp(16px, 2.4vw, 32px);
+  font-weight: 1000;
+}
+
+.rule-player-water {
+  color: #078fb8;
+  text-shadow: 0 1px 0 #fff;
+}
+
+.rule-player-pink {
+  color: #c5296c;
+  text-shadow: 0 1px 0 #fff;
+}
+
+#stageRuleCountdown {
+  margin-top: 16px;
+  color: #714115;
+  font-size: clamp(13px, 1.7vw, 23px);
+  font-weight: 900;
+}
+
+@media (max-width: 700px) {
+  #stageRulePoints {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .rule-players {
+    gap: 15px;
+  }
+}
+
+/* ルール説明のフォントをウエスタン風に統一 */
+#stageRuleScreen,
+.stage-rule-card,
+#stageRuleTitle,
+#stageRulePoints,
+.rule-players,
+#stageRuleCountdown {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    "Hiragino Mincho ProN",
+    "Yu Mincho",
+    serif;
+}
+
+#stageRuleTitle {
+  letter-spacing: 0.06em;
+  font-weight: 1000;
+}
+
+/* 画像：〇〇点の並び */
+#stageRulePoints {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: clamp(8px, 1.4vw, 22px);
+  width: 92%;
+  margin: 1.5% auto;
+}
+
+.rule-point {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(5px, 0.8vw, 13px);
+  min-height: clamp(58px, 8vw, 120px);
+  padding: 0.35em 0.5em;
+  border: clamp(2px, 0.3vw, 5px) solid #8a5728;
+  border-radius: clamp(7px, 1vw, 16px);
+  background:
+    linear-gradient(
+      #fff8df,
+      #e8d2a7
+    );
+  box-shadow:
+    inset 0 0 10px rgba(70, 37, 12, 0.25),
+    0 4px 0 #4b2813;
+  color: #3c2313;
+  font-size: clamp(12px, 1.45vw, 25px);
+  font-weight: 1000;
+  white-space: nowrap;
+}
+
+.rule-point img {
+  width: clamp(42px, 6vw, 92px);
+  height: clamp(42px, 6vw, 92px);
+  object-fit: contain;
+  filter:
+    drop-shadow(0 3px 2px rgba(40, 20, 8, 0.35));
+}
+
+.rule-player-water,
+.rule-player-pink {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    "Hiragino Mincho ProN",
+    "Yu Mincho",
+    serif;
+  font-weight: 1000;
+}
+
+.rule-player-water {
+  color: #55eaff;
+}
+
+.rule-player-pink {
+  color: #ff6bba;
+}
+
+
+</style>
+</head>
+<body>
+<iframe id="gameFrame" src="index.html" title="3ステージシューティングゲーム"></iframe>
+
+<div id="westernTransition" aria-hidden="true">
+  <div class="western-door left"></div>
+  <div class="western-door right"></div>
+  <div id="westernTransitionText">READY?</div>
+</div>
+
+<!-- ステージ開始前のルール説明 -->
+<div id="stageRuleScreen" aria-hidden="true">
+  <div class="stage-rule-card">
+
+    <h2 id="stageRuleTitle">
+      STAGE RULES
+    </h2>
+
+    <div id="stageRulePoints"></div>
+
+    <div class="rule-players">
+      <div class="rule-player-water">
+        右：水色・ZR
+      </div>
+
+      <div class="rule-player-pink">
+        左：ピンク・ZL
+      </div>
+    </div>
+
+    <div id="stageRuleCountdown">
+      まもなくスタート
+    </div>
+
+  </div>
+</div>
+
+<div id="stageResultScreen" class="overlay">
+  <div class="stage-result-frame">
+    <div id="stageFinishTitle" class="stage-finish-title">STAGE FINISH!</div>
+    <div class="stage-score-row">
+      <div class="stage-score p1-color"><span class="score-label">🩵 水色</span><div id="stageScore1" class="stage-result-digits"></div></div>
+      <div class="stage-score p2-color"><span class="score-label">🩷 ピンク</span><div id="stageScore2" class="stage-result-digits"></div></div>
+    </div>
+    <img id="stageCharacterImage" alt="">
+    <div id="stageCountdown" class="stage-countdown">5</div>
+    <div id="nextStageText"><span id="nextSeconds">5</span>秒後に次のステージ！</div>
+  </div>
+</div>
+
+<div id="finalResultScreen" class="overlay">
+  <div class="result-frame">
+    <h1 class="final-title">ALL 3 STAGES FINISH!</h1>
+    <div class="player-grid">
+      <section class="player-card p1-card">
+        <div class="player-name p1-color">水色プレイヤー</div>
+        <div class="label-plate">トータルスコア</div>
+        <div id="finalDigits1" class="score-digits"></div>
+        <div class="label-plate">ヒット率</div>
+        <div id="finalAccuracy1" class="accuracy">0%</div>
+        <div id="stageDetails1" class="stage-details"></div>
+      </section>
+      <section class="player-card p2-card">
+        <div class="player-name p2-color">ピンクプレイヤー</div>
+        <div class="label-plate">トータルスコア</div>
+        <div id="finalDigits2" class="score-digits"></div>
+        <div class="label-plate">ヒット率</div>
+        <div id="finalAccuracy2" class="accuracy">0%</div>
+        <div id="stageDetails2" class="stage-details"></div>
+      </section>
+    </div>
+    <div class="rank-grid">
+      <section class="rank-card"><h3 id="todayRankTitle">今日の個人 TOP 3</h3><ol id="todayRanking" class="ranking-list"></ol></section>
+      <section class="rank-card"><h3>文化祭2日間 個人 TOP 3</h3><ol id="eventRanking" class="ranking-list"></ol></section>
+      <section class="rank-card">
+        <h3>2人合計 最高記録</h3>
+        <div class="pair-box">
+          <div class="pair-record"><small>今日</small><strong id="todayPairScore">---点</strong><span id="todayPairName">まだ記録なし</span></div>
+          <div class="pair-record"><small>文化祭2日間</small><strong id="eventPairScore">---点</strong><span id="eventPairName">まだ記録なし</span></div>
+        </div>
+      </section>
+    </div>
+    <div class="button-row">
+      <button id="playAgainButton" class="main-button" type="button">NEXT PLAYERS<small>次のプレイヤーへ</small></button>
+      <button id="resetRecordsButton" class="staff-button" type="button">運営用：記録リセット</button>
+    </div>
+  </div>
+</div>
+
+<div id="nameModal" class="overlay">
+  <div class="modal-card">
+    <h2 id="nameModalTitle">NEW RECORD!</h2>
+    <p class="name-note">12文字以内のペアネームを入力してね</p>
+    <input id="nameInput" type="text" maxlength="12" autocomplete="off">
+    <button id="saveNameButton" class="modal-button" type="button">登録する</button>
+  </div>
+</div>
+
+<script>
+const STAGES=[
+  {id:"friend",name:"FARM STAGE",src:"index.html"},
+  {id:"alien",name:"ALIEN STAGE",src:"alien-stage6.html"},
+  {id:"bonus",name:"BONUS STAGE",src:"bonus-stage4.html"}
+];
+const EVENT_DATES=["2026-09-27","2026-09-28"];
+const RECORDS_KEY="threeStageShootingRecordsV1";
+const gameFrame=document.getElementById("gameFrame");
+const stageResultScreen=document.getElementById("stageResultScreen");
+const stageCountdown=document.getElementById("stageCountdown");
+const stageCharacterImage=document.getElementById("stageCharacterImage");
+const finalResultScreen=document.getElementById("finalResultScreen");
+const nameModal=document.getElementById("nameModal");
+const nameInput=document.getElementById("nameInput");
+const westernTransition =
+  document.getElementById(
+    "westernTransition"
+  );
+
+const westernTransitionText =
+  document.getElementById(
+    "westernTransitionText"
+  );
+let currentStageIndex=0;
+let stageHandled=false;
+let stageResults=[];
+let pendingNameResolve=null;
+
+function emptyResult(stage){return{finished:true,stage,score1:0,score2:0,shots1:0,shots2:0,hits1:0,hits2:0}}
+function normalizeResult(value){
+  const result=Object.assign(emptyResult(STAGES[currentStageIndex].id),value||{});
+  ["score1","score2","shots1","shots2","hits1","hits2"].forEach(key=>{result[key]=Number(result[key])||0});
+  return result;
+}
+function accuracy(hits,shots){return shots<=0?0:Math.min(100,Math.round(hits/shots*100))}
+function dateKey(){const now=new Date();return`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`}
+function shortDate(key){const parts=key.split("-");return`${Number(parts[1])}/${Number(parts[2])}`}
+function loadRecords(){try{const saved=JSON.parse(localStorage.getItem(RECORDS_KEY));return saved&&saved.days?saved:{days:{}}}catch(error){return{days:{}}}}
+function saveRecords(records){localStorage.setItem(RECORDS_KEY,JSON.stringify(records))}
+function ensureDay(records,key){if(!records.days[key])records.days[key]={individuals:[],pairs:[]};return records.days[key]}
+function sortedTop(list,limit){return[...list].sort((a,b)=>b.score-a.score||a.time-b.time).slice(0,limit)}
+function eventIndividuals(records){return sortedTop(EVENT_DATES.flatMap(key=>records.days[key]?.individuals||[]),3)}
+function eventPairs(records){return sortedTop(EVENT_DATES.flatMap(key=>records.days[key]?.pairs||[]),1)}
+function qualifiesForTopThree(list,score){const top=sortedTop(list,3);return top.length<3||score>top[top.length-1].score}
+
+function askName(title,fallback){
+  return new Promise(resolve=>{
+    document.getElementById("nameModalTitle").textContent=title;
+    nameInput.value=fallback;
+    nameModal.style.display="flex";
+    nameInput.focus();nameInput.select();pendingNameResolve=resolve;
+  });
+}
+function finishNameInput(){
+  if(!pendingNameResolve)return;
+  const value=nameInput.value.trim().slice(0,12)||"ゲスト";
+  const resolve=pendingNameResolve;pendingNameResolve=null;nameModal.style.display="none";resolve(value);
+}
+document.getElementById("saveNameButton").addEventListener("click",finishNameInput);
+nameInput.addEventListener("keydown",event=>{if(event.key==="Enter")finishNameInput()});
+
+function renderDigits(element,score){
+  element.innerHTML="";
+  const text=String(Math.max(0,Math.round(score))).padStart(6,"0").slice(-6);
+  for(const character of text){const digit=document.createElement("span");digit.className="digit";digit.textContent=character;element.appendChild(digit)}
+}
+function renderStageDigits(element,score){
+  element.innerHTML="";
+  const text=String(Math.max(0,Math.round(score))).padStart(6,"0").slice(-6);
+  for(const character of text){
+    const digit=document.createElement("span");
+    digit.className="stage-result-digit";
+    digit.textContent=character;
+    element.appendChild(digit);
+  }
+}
+function showStageCountdown(number){
+  stageCountdown.textContent=number;
+  stageCountdown.classList.remove("count-pop");
+  void stageCountdown.offsetWidth;
+  stageCountdown.classList.add("count-pop");
+}
+function renderRanking(element,list){
+  element.innerHTML="";
+  if(list.length===0){const item=document.createElement("li");item.textContent="まだ記録なし";element.appendChild(item);return}
+  list.forEach(record=>{const item=document.createElement("li"),line=document.createElement("span"),score=document.createElement("span");line.className="rank-line";score.textContent=`${record.score.toLocaleString()}点`;line.append(score);item.appendChild(line);element.appendChild(item)});
+}
+function renderPair(prefix,record){document.getElementById(`${prefix}PairScore`).textContent=record?`${record.score.toLocaleString()}点`:"---点";document.getElementById(`${prefix}PairName`).textContent=record?record.name:"まだ記録なし"}
+function renderRecords(){
+  const records=loadRecords(),today=dateKey(),todayData=records.days[today]||{individuals:[],pairs:[]};
+  document.getElementById("todayRankTitle").textContent=`${shortDate(today)} 個人 TOP 3`;
+  renderRanking(document.getElementById("todayRanking"),sortedTop(todayData.individuals,3));
+  renderRanking(document.getElementById("eventRanking"),eventIndividuals(records));
+  renderPair("today",sortedTop(todayData.pairs,1)[0]||null);
+  renderPair("event",eventPairs(records)[0]||null);
+}
+function totalFor(playerNumber,key){return stageResults.reduce((sum,result)=>sum+result[`${key}${playerNumber}`],0)}
+function stageBreakdown(playerNumber){return stageResults.map((result,index)=>`${STAGES[index].name}：${result[`score${playerNumber}`].toLocaleString()}点`).join("　／　")}
+
+async function saveNewRecords(total1,total2,accuracy1,accuracy2){
+  const records=loadRecords(),today=dateKey(),day=ensureDay(records,today),now=Date.now();
+  const players=[
+    {score:total1,accuracy:accuracy1},
+    {score:total2,accuracy:accuracy2}
+  ];
+  for(const player of players){
+    if(qualifiesForTopThree(day.individuals,player.score)){
+      day.individuals.push({score:player.score,accuracy:player.accuracy,date:today,time:now});
+      day.individuals=sortedTop(day.individuals,3);
+    }
+  }
+  const pairScore=total1+total2;
+  const todayPairTop=sortedTop(day.pairs,1)[0]?.score??-Infinity;
+  const overallPairTop=eventPairs(records)[0]?.score??-Infinity;
+  const isEventDay=EVENT_DATES.includes(today);
+  if(pairScore>todayPairTop||(isEventDay&&pairScore>overallPairTop)){
+    const pairName=await askName("2人合計の新記録！ ペアネーム","なかよしペア");
+    day.pairs.push({name:pairName,score:pairScore,date:today,time:now});day.pairs=sortedTop(day.pairs,5);
+  }
+  saveRecords(records);renderRecords();
+}
+
+async function showFinalResult(){
+  gameFrame.style.visibility="hidden";
+  const total1=totalFor(1,"score"),total2=totalFor(2,"score");
+  const shots1=totalFor(1,"shots"),shots2=totalFor(2,"shots");
+  const hits1=totalFor(1,"hits"),hits2=totalFor(2,"hits");
+  const accuracy1=accuracy(hits1,shots1),accuracy2=accuracy(hits2,shots2);
+  renderDigits(document.getElementById("finalDigits1"),total1);renderDigits(document.getElementById("finalDigits2"),total2);
+  document.getElementById("finalAccuracy1").textContent=`${accuracy1}%`;document.getElementById("finalAccuracy2").textContent=`${accuracy2}%`;
+  document.getElementById("stageDetails1").textContent=stageBreakdown(1);document.getElementById("stageDetails2").textContent=stageBreakdown(2);
+  finalResultScreen.style.display="block";renderRecords();await saveNewRecords(total1,total2,accuracy1,accuracy2);
+}
+function showStageResult(result){
+  const stage=STAGES[currentStageIndex];
+
+const isFarmStage=
+  stage.id==="friend";
+
+const isAlienStage=
+  stage.id==="alien";
+
+stageResultScreen.classList.toggle(
+  "farm-result",
+  isFarmStage
+);
+
+stageResultScreen.classList.toggle(
+  "alien-result",
+  isAlienStage
+);
+  document.getElementById("stageFinishTitle").textContent=`${stage.name} FINISH!`;
+  renderStageDigits(document.getElementById("stageScore1"),result.score1);
+  renderStageDigits(document.getElementById("stageScore2"),result.score2);
+
+  const characterImage="Jessie.png";
+
+stageCharacterImage.classList.toggle(
+  "has-image",
+  (isFarmStage || isAlienStage)
+  && Boolean(characterImage)
+);
+
+if(characterImage){
+  stageCharacterImage.src=characterImage;
+
+  stageCharacterImage.onerror=()=>{
+    stageCharacterImage.classList.remove(
+      "has-image"
+    );
+  };
+}
+
+  const showResultNow=()=>{
+    stageResultScreen.style.display=isAlienStage?"block":"flex";
+
+    let seconds=5;
+
+    document.getElementById("nextSeconds").textContent=seconds;
+    showStageCountdown(seconds);
+
+    const timer=setInterval(()=>{
+      seconds--;
+
+      document.getElementById("nextSeconds").textContent=Math.max(0,seconds);
+
+      if(seconds>0){
+        showStageCountdown(seconds);
+      }
+
+      if(seconds<=0){
+        clearInterval(timer);
+        startNextStage();
+      }
+    },1000);
+  };
+
+  if(isFarmStage || isAlienStage){
+
+  const bg=new Image();
+
+  bg.src=
+    isFarmStage
+      ? "./farm-result.png?v=1"
+      : "./alien-bonus-result-character-space.png?v=1";
+
+  if(bg.complete){
+    showResultNow();
+  }else{
+    bg.onload=showResultNow;
+    bg.onerror=showResultNow;
+  }
+
+}else{
+  showResultNow();
+}
+}
+
+function handleStageFinished(rawResult){
+  if(stageHandled)return;
+  stageHandled=true;
+  const result=normalizeResult(rawResult);
+  stageResults[currentStageIndex]=result;
+
+
+  if(currentStageIndex===STAGES.length-1)showFinalResult();
+  else showStageResult(result);
+}
+function startNextStage() {
+  currentStageIndex++;
+  stageHandled = false;
+
+  gameFrame.style.visibility =
+    "hidden";
+
+  gameFrame.src =
+    STAGES[currentStageIndex].src;
+}
+
+/* =====================================
+   ルール説明画面
+===================================== */
+
+const stageRuleScreen =
+  document.getElementById(
+    "stageRuleScreen"
+  );
+
+const stageRuleTitle =
+  document.getElementById(
+    "stageRuleTitle"
+  );
+
+const stageRulePoints =
+  document.getElementById(
+    "stageRulePoints"
+  );
+
+const stageRuleCountdown =
+  document.getElementById(
+    "stageRuleCountdown"
+  );
+
+let stageRuleTimer = null;
+
+
+function showStageRules(
+  stageId,
+  startStage
+) {
+
+  clearInterval(
+    stageRuleTimer
+  );
+
+  const ruleData = {
+
+    alien: {
+
+      title:
+        "ALIEN STAGE RULES",
+
+      /* 元の8秒＋移動時間10秒 */
+      seconds: 18,
+
+      items: [
+        {
+          image: "alien-green.png",
+          score: "500点"
+        },
+        {
+          image: "alien-blue.png",
+          score: "1000点"
+        },
+        {
+          image: "alien-purple.png",
+          score: "2000点"
+        },
+        {
+          image: "alien-crown.png",
+          score: "5000点"
+        },
+        {
+          image: "alien-10000.png",
+          score: "10000点"
+        },
+        {
+          image: "enemy.png",
+          score: "−1000点"
+        }
+      ]
+
+    },
+
+    bonus: {
+
+      title:
+        "BONUS STAGE RULES",
+
+      seconds: 6,
+
+      items: [
+        {
+          image: "target.png",
+          score: "500点"
+        },
+        {
+          image: "bullseye.png",
+          score: "1000点"
+        }
+      ]
+
+    }
+
+  };
+
+  const data =
+    ruleData[stageId];
+
+  if (!data) {
+
+    playWesternTransition(
+      startStage
+    );
+
+    return;
+
+  }
+
+  stageRuleTitle.textContent =
+    data.title;
+
+  stageRulePoints.innerHTML =
+    data.items
+      .map(
+        item => `
+          <div class="rule-point">
+            <img
+              src="${item.image}"
+              alt=""
+            >
+            <span>
+              ：${item.score}
+            </span>
+          </div>
+        `
+      )
+      .join("");
+
+  let remaining =
+    data.seconds;
+
+  stageRuleCountdown.textContent =
+    `あと ${remaining} 秒`;
+
+  gameFrame.style.visibility =
+    "hidden";
+
+  stageRuleScreen.style.display =
+    "flex";
+
+  stageRuleScreen.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
+  stageRuleTimer =
+    setInterval(
+      () => {
+
+        remaining--;
+
+        stageRuleCountdown.textContent =
+          `あと ${remaining} 秒`;
+
+        if (
+          remaining <= 0
+        ) {
+
+          clearInterval(
+            stageRuleTimer
+          );
+
+          stageRuleTimer = null;
+
+          stageRuleScreen.style.display =
+            "none";
+
+          stageRuleScreen.setAttribute(
+            "aria-hidden",
+            "true"
+          );
+
+          playWesternTransition(
+            startStage
+          );
+
+        }
+
+      },
+      1000
+    );
+
+}
+
+function playWesternTransition(startStage) {
+  westernTransition.style.display = "block";
+  westernTransition.classList.remove("go", "open");
+  westernTransitionText.textContent = "READY?";
+
+  void westernTransition.offsetWidth;
+
+  stageResultScreen.style.display = "none";
+
+  /* 次のステージ背景を先に表示 */
+  gameFrame.style.visibility = "visible";
+
+  /* READY?を1秒表示 */
+  setTimeout(() => {
+    westernTransitionText.textContent = "GO!";
+    westernTransition.classList.add("go");
+  }, 1000);
+
+  /* GO!を約0.9秒表示してからドアを開く */
+  setTimeout(() => {
+    westernTransition.classList.add("open");
+  }, 1900);
+
+  /* ドアが開き終わってからゲーム開始 */
+  setTimeout(() => {
+    startStage();
+  }, 2750);
+
+  /* 切り替え画面を片付ける */
+  setTimeout(() => {
+    westernTransition.style.display = "none";
+    westernTransition.classList.remove("go", "open");
+  }, 3050);
+}
+
+
+function prepareLoadedStage() {
+
+  const stage =
+    STAGES[currentStageIndex];
+
+
+  try {
+
+    const frameWindow =
+      gameFrame.contentWindow;
+
+    const frameDocument =
+      gameFrame.contentDocument;
+
+
+    /* 友達ステージ */
+
+    if (
+      stage.id === "friend"
+    ) {
+
+      stageRuleScreen.style.display =
+        "none";
+
+      stageRuleScreen.setAttribute(
+        "aria-hidden",
+        "true"
+      );
+
+      gameFrame.style.visibility =
+        "visible";
+
+      return;
+
+    }
+
+
+    /* エイリアンステージ */
+
+    if (
+      stage.id === "alien"
+    ) {
+
+      frameDocument
+        .getElementById(
+          "restartButton"
+        )
+        ?.remove();
+
+
+      const startScreen =
+        frameDocument.getElementById(
+          "startScreen"
+        );
+
+      const introScreen =
+        frameDocument.getElementById(
+          "introScreen"
+        );
+
+      const gameOverScreen =
+        frameDocument.getElementById(
+          "gameOverScreen"
+        );
+
+
+      if (startScreen) {
+        startScreen.style.display =
+          "none";
+      }
+
+      if (introScreen) {
+        introScreen.style.display =
+          "none";
+      }
+
+      if (gameOverScreen) {
+        gameOverScreen.style.display =
+          "none";
+      }
+
+
+      showStageRules(
+        "alien",
+        () =>
+          frameWindow.beginActualGame()
+      );
+
+      return;
+
+    }
+
+
+    /* ボーナスステージ */
+
+    if (
+      stage.id === "bonus"
+    ) {
+
+      const readyScreen =
+        frameDocument.getElementById(
+          "readyScreen"
+        );
+
+      const opening =
+        frameDocument.getElementById(
+          "opening"
+        );
+
+      const resultScreen =
+        frameDocument.getElementById(
+          "resultScreen"
+        );
+
+
+      if (readyScreen) {
+        readyScreen.style.display =
+          "none";
+      }
+
+      if (opening) {
+        opening.style.display =
+          "none";
+      }
+
+      if (resultScreen) {
+        resultScreen.style.display =
+          "none";
+      }
+
+
+      showStageRules(
+        "bonus",
+        () =>
+          frameWindow.startActualGame()
+      );
+
+    }
+
+  } catch (error) {
+
+    console.log(
+      "ステージ開始エラー",
+      error
+    );
+
+
+    gameFrame.style.visibility =
+      "visible";
+
+    stageResultScreen.style.display =
+      "none";
+
+  }
+
+}
+
+gameFrame.addEventListener("load",()=>setTimeout(prepareLoadedStage,100));
+setInterval(()=>{
+  if(stageHandled)return;
+  try{
+    const result=gameFrame.contentWindow.stageResult;
+    const expectedStage=STAGES[currentStageIndex].id;
+
+    /* 切替中に前のステージの結果を読み直さない */
+    if(result?.finished&&result.stage===expectedStage){
+      handleStageFinished(result);
+    }
+  }catch(error){
+    console.log("結果待機中",error);
+  }
+},150);
+document.getElementById("playAgainButton").addEventListener("click",()=>location.reload());
+document.getElementById("resetRecordsButton").addEventListener("click",()=>{
+  const answer=prompt("記録を全部消す場合は RESET と入力してください");if(answer!=="RESET")return;
+  if(confirm("準備期間・文化祭当日の記録をすべて削除します。よろしいですか？")){localStorage.removeItem(RECORDS_KEY);renderRecords();alert("記録をリセットしました")}
+});
+</script>
+</body>
+</html>
