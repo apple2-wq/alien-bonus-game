@@ -719,6 +719,86 @@ button,input{font:inherit}
   }
 }
 
+/* ルール説明のフォントをウエスタン風に統一 */
+#stageRuleScreen,
+.stage-rule-card,
+#stageRuleTitle,
+#stageRulePoints,
+.rule-players,
+#stageRuleCountdown {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    "Hiragino Mincho ProN",
+    "Yu Mincho",
+    serif;
+}
+
+#stageRuleTitle {
+  letter-spacing: 0.06em;
+  font-weight: 1000;
+}
+
+/* 画像：〇〇点の並び */
+#stageRulePoints {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: clamp(8px, 1.4vw, 22px);
+  width: 92%;
+  margin: 1.5% auto;
+}
+
+.rule-point {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(5px, 0.8vw, 13px);
+  min-height: clamp(58px, 8vw, 120px);
+  padding: 0.35em 0.5em;
+  border: clamp(2px, 0.3vw, 5px) solid #8a5728;
+  border-radius: clamp(7px, 1vw, 16px);
+  background:
+    linear-gradient(
+      #fff8df,
+      #e8d2a7
+    );
+  box-shadow:
+    inset 0 0 10px rgba(70, 37, 12, 0.25),
+    0 4px 0 #4b2813;
+  color: #3c2313;
+  font-size: clamp(12px, 1.45vw, 25px);
+  font-weight: 1000;
+  white-space: nowrap;
+}
+
+.rule-point img {
+  width: clamp(42px, 6vw, 92px);
+  height: clamp(42px, 6vw, 92px);
+  object-fit: contain;
+  filter:
+    drop-shadow(0 3px 2px rgba(40, 20, 8, 0.35));
+}
+
+.rule-player-water,
+.rule-player-pink {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    "Hiragino Mincho ProN",
+    "Yu Mincho",
+    serif;
+  font-weight: 1000;
+}
+
+.rule-player-water {
+  color: #55eaff;
+}
+
+.rule-player-pink {
+  color: #ff6bba;
+}
+
 
 </style>
 </head>
@@ -1091,45 +1171,159 @@ function showStageRules(
   startStage
 ) {
 
-  if (stageRuleTimer) {
-    clearInterval(stageRuleTimer);
-    stageRuleTimer = null;
+  clearInterval(
+    stageRuleTimer
+  );
+
+  const ruleData = {
+
+    alien: {
+
+      title:
+        "ALIEN STAGE RULES",
+
+      /* 元の8秒＋移動時間10秒 */
+      seconds: 18,
+
+      items: [
+        {
+          image: "alien-green.png",
+          score: "500点"
+        },
+        {
+          image: "alien-blue.png",
+          score: "1000点"
+        },
+        {
+          image: "alien-purple.png",
+          score: "2000点"
+        },
+        {
+          image: "alien-crown.png",
+          score: "5000点"
+        },
+        {
+          image: "alien-10000.png",
+          score: "10000点"
+        },
+        {
+          image: "enemy.png",
+          score: "−1000点"
+        }
+      ]
+
+    },
+
+    bonus: {
+
+      title:
+        "BONUS STAGE RULES",
+
+      seconds: 6,
+
+      items: [
+        {
+          image: "target.png",
+          score: "500点"
+        },
+        {
+          image: "bullseye.png",
+          score: "1000点"
+        }
+      ]
+
+    }
+
+  };
+
+  const data =
+    ruleData[stageId];
+
+  if (!data) {
+
+    playWesternTransition(
+      startStage
+    );
+
+    return;
+
   }
 
+  stageRuleTitle.textContent =
+    data.title;
 
-  let seconds;
+  stageRulePoints.innerHTML =
+    data.items
+      .map(
+        item => `
+          <div class="rule-point">
+            <img
+              src="${item.image}"
+              alt=""
+            >
+            <span>
+              ：${item.score}
+            </span>
+          </div>
+        `
+      )
+      .join("");
 
+  let remaining =
+    data.seconds;
 
-  if (stageId === "alien") {
+  stageRuleCountdown.textContent =
+    `あと ${remaining} 秒`;
 
-    seconds = 8;
+  gameFrame.style.visibility =
+    "hidden";
 
-    stageRuleTitle.textContent =
-      "ALIEN STAGE";
+  stageRuleScreen.style.display =
+    "flex";
 
-    stageRulePoints.innerHTML = `
-      <div class="rule-point">緑：500点</div>
-      <div class="rule-point">青：1,000点</div>
-      <div class="rule-point">紫：2,000点</div>
-      <div class="rule-point">王冠：5,000点</div>
-      <div class="rule-point">スペシャル：10,000点</div>
-      <div class="rule-point">敵：−1,000点</div>
-    `;
+  stageRuleScreen.setAttribute(
+    "aria-hidden",
+    "false"
+  );
 
-  } else {
+  stageRuleTimer =
+    setInterval(
+      () => {
 
-    seconds = 6;
+        remaining--;
 
-    stageRuleTitle.textContent =
-      "BONUS STAGE";
+        stageRuleCountdown.textContent =
+          `あと ${remaining} 秒`;
 
-    stageRulePoints.innerHTML = `
-      <div class="rule-point">丸い的：500点</div>
-      <div class="rule-point">レアな的：1,000点</div>
-      <div class="rule-point">制限時間：15秒</div>
-    `;
+        if (
+          remaining <= 0
+        ) {
 
-  }
+          clearInterval(
+            stageRuleTimer
+          );
+
+          stageRuleTimer = null;
+
+          stageRuleScreen.style.display =
+            "none";
+
+          stageRuleScreen.setAttribute(
+            "aria-hidden",
+            "true"
+          );
+
+          playWesternTransition(
+            startStage
+          );
+
+        }
+
+      },
+      1000
+    );
+
+}
 
 
   gameFrame.style.visibility =
@@ -1190,7 +1384,7 @@ function showStageRules(
       1000
     );
 
-}
+
 
 function playWesternTransition(startStage) {
   westernTransition.style.display = "block";
