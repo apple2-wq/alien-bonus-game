@@ -159,22 +159,22 @@ h1 {
         -2px 2px 3px black;
 }
 
-/* 左Joy-Con＝ピンク */
+/* 左Joy-Con＝P1 水色 */
 .left-cursor {
-  color: #ff6bba;
-  text-shadow:
-    0 0 4px #ffffff,
-    0 0 8px #ff6bba,
-    0 0 14px #ff6bba;
+    color: #55eaff;
+    text-shadow:
+        0 0 4px #ffffff,
+        0 0 8px #55eaff,
+        0 0 14px #55eaff;
 }
 
-/* 右Joy-Con＝水色 */
+/* 右Joy-Con＝P2 ピンク */
 .right-cursor {
-  color: #55eaff;
-  text-shadow:
-    0 0 4px #ffffff,
-    0 0 8px #55eaff,
-    0 0 14px #55eaff;
+    color: #ff6bba;
+    text-shadow:
+        0 0 4px #ffffff,
+        0 0 8px #ff6bba,
+        0 0 14px #ff6bba;
 }
 #timer {
     color: white;

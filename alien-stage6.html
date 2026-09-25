@@ -1101,9 +1101,9 @@ body {
 
     <div class="player1Info">
 
-      🔵 P1　右Joy-Con
-      <br>
-      ZRで発射
+      🩵 P1　左Joy-Con
+　　　　<br>
+　　　　ZLで発射
 
     </div>
 
@@ -1113,9 +1113,9 @@ body {
 
     <div class="player2Info">
 
-      🩷 P2　左Joy-Con
-      <br>
-      ZLで発射
+      🩷 P2　右Joy-Con
+　　　　<br>
+　　　　ZRで発射
 
     </div>
 
@@ -2047,231 +2047,127 @@ function updateControllers() {
   const rightPad =
     getRightPad();
 
-
   const leftPad =
     getLeftPad(
       rightPad
     );
 
 
-  /* =====================================
-     P1 右Joy-Con
-  ===================================== */
+  /* =========================
+     P2：右Joy-Con・ピンク
+  ========================= */
 
   if (
-    rightPad
-    &&
+    rightPad &&
     gameRunning
   ) {
 
-    const rawX =
-      rightPad.axes[
-        RIGHT_AXIS_X
-      ] || 0;
-
-
-    const rawY =
-      rightPad.axes[
-        RIGHT_AXIS_Y
-      ] || 0;
-
-
     const stick =
       getStickVector(
-        rawX,
-        rawY
+        rightPad.axes[RIGHT_AXIS_X] || 0,
+        rightPad.axes[RIGHT_AXIS_Y] || 0
       );
-
-
-    aim1X +=
-      stick.x
-      *
-      AIM_SPEED;
-
-
-    aim1Y +=
-      stick.y
-      *
-      AIM_SPEED;
-
-
-    aim1X =
-      Math.max(
-        2,
-        Math.min(
-          98,
-          aim1X
-        )
-      );
-
-
-    aim1Y =
-      Math.max(
-        3,
-        Math.min(
-          97,
-          aim1Y
-        )
-      );
-
-
-    crosshair1.style.left =
-      aim1X + "%";
-
-
-    crosshair1.style.top =
-      aim1Y + "%";
-
-
-    /*
-      ★固定ZR
-    */
-
-    const shootPressed =
-
-      rightPad.buttons[
-        RIGHT_SHOOT_BUTTON
-      ]?.pressed
-
-      ||
-
-      false;
-
-
-    if (
-
-      shootPressed
-
-      &&
-
-      !previousRightShoot
-
-    ) {
-
-      shootWithCrosshair(
-        1
-      );
-
-    }
-
-
-    previousRightShoot =
-      shootPressed;
-
-  }
-
-
-  /* =====================================
-     P2 左Joy-Con
-  ===================================== */
-
-  if (
-    leftPad
-    &&
-    gameRunning
-  ) {
-
-    const rawX =
-      leftPad.axes[
-        LEFT_AXIS_X
-      ] || 0;
-
-
-    const rawY =
-      leftPad.axes[
-        LEFT_AXIS_Y
-      ] || 0;
-
-
-    const stick =
-      getStickVector(
-        rawX,
-        rawY
-      );
-
-
-    aim2X +=
-      stick.x
-      *
-      AIM_SPEED;
-
-
-    aim2Y +=
-      stick.y
-      *
-      AIM_SPEED;
-
 
     aim2X =
       Math.max(
         2,
         Math.min(
           98,
-          aim2X
+          aim2X + stick.x * AIM_SPEED
         )
       );
-
 
     aim2Y =
       Math.max(
         3,
         Math.min(
           97,
-          aim2Y
+          aim2Y + stick.y * AIM_SPEED
         )
       );
-
 
     crosshair2.style.left =
       aim2X + "%";
 
-
     crosshair2.style.top =
       aim2Y + "%";
 
-
-    /*
-      ★固定ZL
-    */
-
     const shootPressed =
-
-      leftPad.buttons[
-        LEFT_SHOOT_BUTTON
-      ]?.pressed
-
-      ||
-
-      false;
-
+      rightPad.buttons[
+        RIGHT_SHOOT_BUTTON
+      ]?.pressed || false;
 
     if (
-
-      shootPressed
-
-      &&
-
-      !previousLeftShoot
-
+      shootPressed &&
+      !previousRightShoot
     ) {
-
-      shootWithCrosshair(
-        2
-      );
-
+      shootWithCrosshair(2);
     }
 
+    previousRightShoot =
+      shootPressed;
+  }
+
+
+  /* =========================
+     P1：左Joy-Con・水色
+  ========================= */
+
+  if (
+    leftPad &&
+    gameRunning
+  ) {
+
+    const stick =
+      getStickVector(
+        leftPad.axes[LEFT_AXIS_X] || 0,
+        leftPad.axes[LEFT_AXIS_Y] || 0
+      );
+
+    aim1X =
+      Math.max(
+        2,
+        Math.min(
+          98,
+          aim1X + stick.x * AIM_SPEED
+        )
+      );
+
+    aim1Y =
+      Math.max(
+        3,
+        Math.min(
+          97,
+          aim1Y + stick.y * AIM_SPEED
+        )
+      );
+
+    crosshair1.style.left =
+      aim1X + "%";
+
+    crosshair1.style.top =
+      aim1Y + "%";
+
+    const shootPressed =
+      leftPad.buttons[
+        LEFT_SHOOT_BUTTON
+      ]?.pressed || false;
+
+    if (
+      shootPressed &&
+      !previousLeftShoot
+    ) {
+      shootWithCrosshair(1);
+    }
 
     previousLeftShoot =
       shootPressed;
-
   }
 
 
   requestAnimationFrame(
     updateControllers
   );
-
 }
 
 
