@@ -1117,6 +1117,58 @@ if(characterImage){
 }
 }
 
+async function showFinalResult(){
+
+  gameFrame.style.visibility="hidden";
+  stageResultScreen.style.display="none";
+  stageRuleScreen.style.display="none";
+
+  const total1=totalFor(1,"score");
+  const total2=totalFor(2,"score");
+
+  const shots1=totalFor(1,"shots");
+  const shots2=totalFor(2,"shots");
+
+  const hits1=totalFor(1,"hits");
+  const hits2=totalFor(2,"hits");
+
+  const accuracy1=accuracy(hits1,shots1);
+  const accuracy2=accuracy(hits2,shots2);
+
+  renderDigits(
+    document.getElementById("finalDigits1"),
+    total1
+  );
+
+  renderDigits(
+    document.getElementById("finalDigits2"),
+    total2
+  );
+
+  document.getElementById("finalAccuracy1").textContent =
+    `${accuracy1}%`;
+
+  document.getElementById("finalAccuracy2").textContent =
+    `${accuracy2}%`;
+
+  document.getElementById("stageDetails1").textContent =
+    stageBreakdown(1);
+
+  document.getElementById("stageDetails2").textContent =
+    stageBreakdown(2);
+
+  finalResultScreen.style.display="block";
+
+  await saveNewRecords(
+    total1,
+    total2,
+    accuracy1,
+    accuracy2
+  );
+
+  renderRecords();
+}
+
 function handleStageFinished(rawResult){
   if(stageHandled)return;
   stageHandled=true;
