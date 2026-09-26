@@ -2259,6 +2259,29 @@ function makeCharacterBag() {
 
   }
 
+  const superIndex =
+  characterBag.findIndex(
+    item =>
+      item.type === "super"
+  );
+
+if (
+  superIndex !== -1
+) {
+
+  const superCharacter =
+    characterBag.splice(
+      superIndex,
+      1
+    )[0];
+
+  characterBag.splice(
+    4,
+    0,
+    superCharacter
+  );
+
+}
 
   characterIndex =
     0;
