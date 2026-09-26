@@ -1031,17 +1031,7 @@ async function saveNewRecords(total1,total2,accuracy1,accuracy2){
   saveRecords(records);renderRecords();
 }
 
-async function showFinalResult(){
-  gameFrame.style.visibility="hidden";
-  const total1=totalFor(1,"score"),total2=totalFor(2,"score");
-  const shots1=totalFor(1,"shots"),shots2=totalFor(2,"shots");
-  const hits1=totalFor(1,"hits"),hits2=totalFor(2,"hits");
-  const accuracy1=accuracy(hits1,shots1),accuracy2=accuracy(hits2,shots2);
-  renderDigits(document.getElementById("finalDigits1"),total1);renderDigits(document.getElementById("finalDigits2"),total2);
-  document.getElementById("finalAccuracy1").textContent=`${accuracy1}%`;document.getElementById("finalAccuracy2").textContent=`${accuracy2}%`;
-  document.getElementById("stageDetails1").textContent=stageBreakdown(1);document.getElementById("stageDetails2").textContent=stageBreakdown(2);
-  finalResultScreen.style.display="block";renderRecords();await saveNewRecords(total1,total2,accuracy1,accuracy2);
-}
+
 function showStageResult(result){
   const stage=STAGES[currentStageIndex];
 

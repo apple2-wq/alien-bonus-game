@@ -17,7 +17,7 @@ practiceText.style.display = "none";
    ゲーム状態
 ========================================================= */
 
-let timeLeft = 30;
+let timeLeft = 25;
 let gameOver = false;
 let gameStarted = false;
 let practiceMode = false;
@@ -1894,12 +1894,13 @@ function startGameTimer() {
 
     }
 
-    timeLeft = 30;
+    timeLeft = 25
+    ;
 
     gameOver = false;
 
     timerText.textContent =
-        "Time: 30";
+        "Time: 25";
 
     gameTimer =
         setInterval(
